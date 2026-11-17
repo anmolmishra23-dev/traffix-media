@@ -6,7 +6,7 @@ export const fallbackSettings: SiteSettings = {
   tagline: "Be Seen. Be Known.",
   hero_heading: "Be seen. Be known.",
   hero_subheading:
-    "Traffix Media is a social media and content marketing agency helping brands across real estate, hospitality, lifestyle, technology and more get noticed — and remembered.",
+    "Traffix Media is a creative marketing and video production company helping brands across real estate, hospitality, lifestyle, technology and more get noticed — and remembered.",
   about_heading: "We make brands impossible to scroll past.",
   about_body:
     "From launch campaigns for real estate developers to influencer drives for consumer brands and full event coverage, Traffix Media plans, produces and distributes content that earns attention. We work across industries, but the goal is always the same: get your brand seen by the right people, and make sure they remember it.",

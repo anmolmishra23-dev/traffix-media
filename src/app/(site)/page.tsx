@@ -1,11 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, ChatBubble, HeartBubble } from "@/components/icons";
 import { CtaBand } from "@/components/site/CtaBand";
+import { HeroViewfinder } from "@/components/site/HeroViewfinder";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { Reveal } from "@/components/site/Reveal";
 import { getProjects, getProjectsByCategory, getServices, getSettings, getTestimonials } from "@/lib/data";
-import { SITE_NAME, SITE_URL, asset, instagramUrl } from "@/lib/utils";
+import { SITE_NAME, SITE_URL, instagramUrl } from "@/lib/utils";
 
 export default async function HomePage() {
   const [settings, projects, groups, services, testimonials] = await Promise.all([
@@ -41,7 +41,7 @@ export default async function HomePage() {
           <div>
             <Reveal>
               <p className="inline-flex items-center gap-2 rounded-full border border-line bg-white/50 px-4 py-1.5 text-sm font-medium text-muted">
-                <span className="size-2 rounded-full bg-maroon" /> Social media &amp; content marketing agency
+                <span className="size-2 rounded-full bg-maroon" /> Creative marketing &amp; video production
               </p>
             </Reveal>
             <Reveal delay={80}>
@@ -69,27 +69,8 @@ export default async function HomePage() {
             </Reveal>
           </div>
 
-          <Reveal delay={200} className="relative mx-auto w-full max-w-[460px]">
-            <div className="relative aspect-square">
-              <div className="absolute inset-[6%] rounded-full bg-maroon/10 blur-3xl" />
-              <Image
-                src={asset("/brand/logo-circle.png")}
-                alt="Traffix Media logo — Be Seen. Be Known."
-                width={512}
-                height={512}
-                priority
-                className="relative h-full w-full drop-shadow-[0_30px_60px_rgba(106,26,35,0.25)]"
-              />
-              <HeartBubble className="animate-float absolute -top-2 left-2 size-16 text-maroon md:size-20 [--r:-10deg]" />
-              <div className="absolute -bottom-4 left-0 rounded-2xl bg-white px-5 py-4 shadow-xl shadow-maroon/10">
-                <p className="font-display text-3xl font-black text-maroon">{projects.length}+</p>
-                <p className="text-sm text-muted">brands served</p>
-              </div>
-              <div className="absolute top-8 -right-2 rounded-2xl bg-ink px-5 py-4 text-cream shadow-xl md:-right-6">
-                <p className="font-display text-3xl font-black">{groups.length}</p>
-                <p className="text-sm text-cream/70">industries</p>
-              </div>
-            </div>
+          <Reveal delay={200}>
+            <HeroViewfinder projects={featured} brandCount={projects.length} industryCount={groups.length} />
           </Reveal>
         </div>
       </section>

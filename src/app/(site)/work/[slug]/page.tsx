@@ -17,7 +17,7 @@ export async function generateStaticParams() {
 function describe(p: NonNullable<Awaited<ReturnType<typeof getProjectBySlug>>>) {
   return (
     p.summary ??
-    `${p.title} — ${p.category?.name ?? "brand"} work by ${SITE_NAME}, a social media, influencer and content marketing agency.`
+    `${p.title} — ${p.category?.name ?? "brand"} work by ${SITE_NAME}, a creative marketing and video production company.`
   );
 }
 

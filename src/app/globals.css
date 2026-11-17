@@ -16,10 +16,15 @@
 
   --animate-marquee: marquee 40s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
+  --animate-scene: progress 3.8s linear both;
 
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
+  }
+  @keyframes progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
   }
   @keyframes float {
     0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
@@ -69,7 +74,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal, .reveal.reveal-armed { animation: none; opacity: 1; transform: none; transition: none; }
-  .animate-marquee, .animate-float { animation: none !important; }
+  .animate-marquee, .animate-float, .animate-scene { animation: none !important; }
 }
 
 .text-balance { text-wrap: balance; }

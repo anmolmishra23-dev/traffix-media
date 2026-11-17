@@ -8,7 +8,7 @@ values (
   1,
   'Be Seen. Be Known.',
   'Be seen. Be known.',
-  'Traffix Media is a social media and content marketing agency helping brands across real estate, hospitality, lifestyle, technology and more get noticed — and remembered.',
+  'Traffix Media is a creative marketing and video production company helping brands across real estate, hospitality, lifestyle, technology and more get noticed — and remembered.',
   'We make brands impossible to scroll past.',
   'From launch campaigns for real estate developers to influencer drives for consumer brands and full event coverage, Traffix Media plans, produces and distributes content that earns attention. We work across industries, but the goal is always the same: get your brand seen by the right people, and make sure they remember it.',
   'traffixmediacontact@gmail.com',

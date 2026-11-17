@@ -8,7 +8,7 @@ import { instagramUrl, telUrl, whatsappUrl } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Start a project with Traffix Media. Tell us about your brand — social media, influencer marketing, content production or event coverage.",
+    "Start a project with Traffix Media. Tell us about your brand — video production, brand films, campaigns, social media or event coverage.",
   alternates: { canonical: "/contact" },
 };
 

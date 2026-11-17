@@ -34,7 +34,7 @@ export default async function OpengraphImage() {
           <div style={{ fontSize: 104, fontWeight: 900, lineHeight: 0.95, textTransform: "uppercase", opacity: 0.85 }}>
             Be known.
           </div>
-          <div style={{ fontSize: 30, marginTop: 36, opacity: 0.75 }}>Social media · Influencer · Content marketing</div>
+          <div style={{ fontSize: 30, marginTop: 36, opacity: 0.75 }}>Creative marketing · Video production</div>
         </div>
         <img src={logoSrc} width={380} height={380} alt="" />
       </div>

@@ -17,11 +17,11 @@ const body = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — Social Media & Content Marketing Agency`,
+    default: `${SITE_NAME} — Creative Marketing & Video Production`,
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    "Traffix Media is a social media, influencer and content marketing agency. Be seen. Be known. Campaigns for real estate, events, lifestyle, F&B, tech and more.",
+    "Traffix Media is a creative marketing and video production company. Brand films, ad films, reels, event coverage and campaigns for real estate, hospitality, lifestyle, F&B, tech and more. Be seen. Be known.",
   applicationName: SITE_NAME,
   openGraph: {
     type: "website",

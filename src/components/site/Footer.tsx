@@ -80,7 +80,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
 
         <div className="mt-8 flex flex-col gap-3 border-t border-cream/10 pt-6 text-sm text-cream/50 md:flex-row md:justify-between">
           <p>© {new Date().getFullYear()} Traffix Media. All rights reserved.</p>
-          <p>Social media · Influencer · Content marketing</p>
+          <p>Creative marketing · Video production</p>
         </div>
       </div>
     </footer>
