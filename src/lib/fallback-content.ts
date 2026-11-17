@@ -82,9 +82,9 @@ export const fallbackProjects: Project[] = projectList.map(([title, slug, catSlu
 });
 
 export const fallbackServices: Service[] = [
+  ["Video Production", "Brand films, ad films, reels and event videos — from concept and shoot to final edit."],
   ["Social Media Management", "Strategy, content calendars, posting and community management across Instagram, Facebook, LinkedIn and YouTube."],
   ["Influencer Marketing", "Finding the right creators, managing collaborations and tracking results for campaigns that feel native."],
-  ["Content Production", "Reels, product shoots, brand films and short-form video made for the feed."],
   ["Event Coverage", "Photo, video and live social coverage that turns a one-night event into weeks of content."],
   ["Brand Campaigns", "Launch and awareness campaigns built around a clear idea, from concept to rollout."],
   ["Performance Marketing", "Paid social campaigns on Meta and Google, optimised for reach, leads and sales."],

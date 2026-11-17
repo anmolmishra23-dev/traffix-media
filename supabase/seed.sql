@@ -64,9 +64,9 @@ on conflict (slug) do nothing;
 -- Placeholder services — confirm the real list with the client and edit in /admin/services
 insert into public.services (title, description, sort_order)
 select * from (values
-  ('Social Media Management', 'Strategy, content calendars, posting and community management across Instagram, Facebook, LinkedIn and YouTube.', 1),
-  ('Influencer Marketing',    'Finding the right creators, managing collaborations and tracking results for campaigns that feel native.', 2),
-  ('Content Production',      'Reels, product shoots, brand films and short-form video made for the feed.', 3),
+  ('Video Production',        'Brand films, ad films, reels and event videos — from concept and shoot to final edit.', 1),
+  ('Social Media Management', 'Strategy, content calendars, posting and community management across Instagram, Facebook, LinkedIn and YouTube.', 2),
+  ('Influencer Marketing',    'Finding the right creators, managing collaborations and tracking results for campaigns that feel native.', 3),
   ('Event Coverage',          'Photo, video and live social coverage that turns a one-night event into weeks of content.', 4),
   ('Brand Campaigns',         'Launch and awareness campaigns built around a clear idea, from concept to rollout.', 5),
   ('Performance Marketing',   'Paid social campaigns on Meta and Google, optimised for reach, leads and sales.', 6)
