@@ -74,3 +74,45 @@ export function Badge({ children, tone = "zinc" }: { children: React.ReactNode; 
   };
   return <span className={cn("inline-flex rounded-full px-2 py-0.5 text-xs font-semibold", tones[tone])}>{children}</span>;
 }
+
+export function Button({
+  children,
+  pending,
+  pendingText = "Saving…",
+  variant = "primary",
+  type = "submit",
+  onClick,
+  className,
+}: {
+  children: React.ReactNode;
+  pending?: boolean;
+  pendingText?: string;
+  variant?: "primary" | "secondary" | "danger";
+  type?: "submit" | "button";
+  onClick?: () => void;
+  className?: string;
+}) {
+  const styles = {
+    primary: "bg-[#6a1a23] text-white hover:bg-[#4f121a]",
+    secondary: "border border-zinc-300 bg-white text-zinc-800 hover:bg-zinc-50",
+    danger: "border border-red-200 bg-white text-red-700 hover:bg-red-50",
+  };
+  return (
+    <button
+      type={type}
+      disabled={pending}
+      onClick={onClick}
+      className={cn(
+        "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition disabled:cursor-wait disabled:opacity-60",
+        styles[variant],
+        className,
+      )}
+    >
+      {pending ? pendingText : children}
+    </button>
+  );
+}
+
+export function Loading() {
+  return <p className="py-10 text-center text-sm text-zinc-500">Loading…</p>;
+}

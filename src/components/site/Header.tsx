@@ -14,7 +14,7 @@ const links = [
 ];
 
 export function Header() {
-  const pathname = usePathname();
+  const pathname = (usePathname() || "/").replace(/(.)\/$/, "$1");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 

@@ -1,6 +1,6 @@
 # Builds the public website as static files and publishes it on GitHub Pages.
 #
-# Runs on every push to main, every hour (to pick up content edited in the admin panel),
+# Runs on every push to main, every 15 minutes (to publish content edited in the admin panel),
 # and on demand: Actions tab → "Deploy to GitHub Pages" → Run workflow.
 #
 # One-time setup (repo Settings):
@@ -8,8 +8,8 @@
 #   • Secrets and variables → Actions → New repository secret:
 #       NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY
 #
-# The admin panel needs a server, so it is not included here — use it locally (npm run dev)
-# until the site moves to Vercel, where everything works without this workflow.
+# The admin panel (/admin) runs in the browser and is included. On Vercel the site updates
+# instantly after each save, so this workflow is only needed for GitHub Pages.
 
 name: Deploy to GitHub Pages
 
@@ -17,7 +17,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "17 * * * *"
+    - cron: "*/15 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -46,9 +46,9 @@ jobs:
 
       - run: npm ci
 
-      # Server-only parts (admin panel + its login proxy) can't run on static hosting
+      # The instant-refresh endpoint needs a server; static hosting rebuilds on the schedule above
       - name: Remove server-only routes
-        run: rm -rf src/app/admin src/proxy.ts
+        run: rm -rf src/app/api
 
       - name: Build static site
         run: npx next build

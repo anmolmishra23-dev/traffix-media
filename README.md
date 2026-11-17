@@ -3,7 +3,7 @@
 Next.js 16 (App Router) + Tailwind CSS v4 + Supabase.
 
 - **Public site:** Home, Work (filter by industry), a page for each project, About, Contact. Pages are pre-rendered as static HTML for SEO and refreshed whenever content changes.
-- **Admin panel at `/admin`:** the client edits projects (images, video links), industries, services, testimonials, site text and contact details, and reads contact-form enquiries.
+- **Admin panel at `/admin`** (runs in the browser, works on GitHub Pages and Vercel): the client edits projects (images, video links), industries, services, testimonials, site text and contact details, and reads contact-form enquiries.
 
 ## Run locally
 
@@ -33,19 +33,20 @@ The site runs **without Supabase** and shows the built-in starting content (`src
 ### Security model
 - Visitors can only **read** published content and **submit** the contact form (Row Level Security in `schema.sql`).
 - Only emails listed in `admin_users` can change content, upload images or read enquiries. Other logged-in users get no access.
+- The admin talks to Supabase directly from the browser with the public anon key; all permissions are enforced by these database rules.
 - Uploaded images go to the public `media` storage bucket.
 
 ## Deploy
 
 ### GitHub Pages (temporary, static)
 
-`.github/workflows/pages.yml` builds the public pages as static HTML and publishes them on every push, every hour, and on demand (Actions → *Deploy to GitHub Pages* → *Run workflow*).
+`.github/workflows/pages.yml` builds the site (including `/admin`) as static HTML and publishes it on every push, every 15 minutes, and on demand (Actions → *Deploy to GitHub Pages* → *Run workflow*).
 
 One-time setup in the GitHub repo:
 1. **Settings → Pages → Source:** GitHub Actions
 2. **Settings → Secrets and variables → Actions:** add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-Limitations on GitHub Pages: no admin panel online (run `npm run dev` locally to edit content; it uses the same database), content changes go live after the next hourly build, and images are not resized automatically. The contact form works.
+On GitHub Pages, changes saved in the admin go live with the next build (within ~15 minutes, or click *Run workflow*), and images are not resized automatically. On Vercel, changes are live within seconds (the admin calls `/api/revalidate` after each save).
 
 ### Vercel / Netlify (full site)
 
@@ -58,8 +59,8 @@ Works on any host that runs Next.js (Vercel, Netlify). Add the three environment
 | What | Where |
 |---|---|
 | Pages | `src/app/(site)/…` |
-| Admin pages | `src/app/admin/…` |
-| Admin save/delete logic | `src/app/admin/actions.ts` |
+| Admin pages | `src/app/admin/…` (browser-only) |
+| Admin save/delete/upload logic | `src/lib/admin-api.ts` |
 | Data fetching | `src/lib/data.ts` |
 | Brand colours and fonts | `src/app/globals.css` (`@theme`), `src/app/layout.tsx` |
 | Logo files | `public/brand/` |

@@ -7,7 +7,8 @@ const isStaticExport = process.env.STATIC_EXPORT === "1";
 const basePath = isStaticExport ? (process.env.BASE_PATH ?? "").replace(/\/$/, "") : "";
 
 const nextConfig: NextConfig = {
-  ...(isStaticExport ? { output: "export" as const, basePath } : {}),
+  // trailingSlash: every page becomes folder/index.html, which static hosts resolve unambiguously
+  ...(isStaticExport ? { output: "export" as const, basePath, trailingSlash: true } : {}),
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
   },
@@ -23,12 +24,6 @@ const nextConfig: NextConfig = {
     // Static hosting has no image optimizer, so images are served as uploaded.
     unoptimized: isStaticExport,
     remotePatterns: [{ protocol: "https", hostname: "*.supabase.co", pathname: "/storage/v1/object/public/**" }],
-  },
-  experimental: {
-    serverActions: {
-      // Admin image uploads go through Server Actions
-      bodySizeLimit: "12mb",
-    },
   },
 };
 
