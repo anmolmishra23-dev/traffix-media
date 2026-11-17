@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #fdf5ea;
+  --color-cream-2: #f5e8d6;
+  --color-sand: #e9dac5;
+  --color-maroon: #6a1a23;
+  --color-maroon-2: #8a2531;
+  --color-maroon-deep: #3a0c12;
+  --color-ink: #1e1718;
+  --color-muted: #6e6062;
+  --color-line: #e6d6c1;
+
+  --font-sans: var(--font-dmsans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+    50% { transform: translateY(-14px) rotate(var(--r, 0deg)); }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-maroon);
+  color: var(--color-cream);
+}
+
+/* Reveal animations.
+   Visible by default (plays a short entrance animation, no JS needed).
+   Reveal.tsx "arms" only elements that start below the fold, then fades them in on scroll. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+.reveal {
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+.reveal.reveal-armed {
+  animation: none;
+  opacity: 0;
+  transform: translateY(28px);
+}
+.reveal.reveal-armed.is-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal, .reveal.reveal-armed { animation: none; opacity: 1; transform: none; transition: none; }
+  .animate-marquee, .animate-float { animation: none !important; }
+}
+
+.text-balance { text-wrap: balance; }
+.text-pretty { text-wrap: pretty; }
