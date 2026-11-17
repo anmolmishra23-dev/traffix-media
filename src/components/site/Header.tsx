@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { asset, cn } from "@/lib/utils";
 
 const links = [
   { href: "/work", label: "Work" },
@@ -39,7 +39,7 @@ export function Header() {
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 md:h-20 md:px-8">
         <Link href="/" onClick={() => setOpen(false)} className="relative z-50 shrink-0" aria-label="Traffix Media — home">
           <Image
-            src={open ? "/brand/logo-nav-light.png" : "/brand/logo-nav.png"}
+            src={asset(open ? "/brand/logo-nav-light.png" : "/brand/logo-nav.png")}
             alt="Traffix Media"
             width={583}
             height={210}

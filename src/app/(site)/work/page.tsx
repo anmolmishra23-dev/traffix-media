@@ -4,8 +4,6 @@ import { Reveal } from "@/components/site/Reveal";
 import { WorkGrid } from "@/components/site/WorkGrid";
 import { getCategories, getProjects } from "@/lib/data";
 
-export const revalidate = 3600;
-
 export const metadata: Metadata = {
   title: "Our Work",
   description:

@@ -5,6 +5,7 @@ import { join } from "node:path";
 export const alt = "Traffix Media — Be Seen. Be Known.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+export const dynamic = "force-static";
 
 export default async function OpengraphImage() {
   const logo = await readFile(join(process.cwd(), "public/brand/logo-circle.png"));

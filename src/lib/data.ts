@@ -9,7 +9,11 @@ import {
 } from "./fallback-content";
 import type { Category, Project, Service, SiteSettings, Testimonial } from "./types";
 
-const PROJECT_SELECT = "*, category:categories(id, name, slug)";
+const PROJECT_SELECT = "*, category:categories(id, name, slug, sort_order)";
+
+/** Industry order first, then the project's own order within its industry. */
+const byIndustryThenOrder = (a: Project, b: Project) =>
+  (a.category?.sort_order ?? 999) - (b.category?.sort_order ?? 999) || a.sort_order - b.sort_order;
 
 export const getSettings = cache(async (): Promise<SiteSettings> => {
   const db = getPublicClient();
@@ -37,7 +41,7 @@ export const getProjects = cache(async (): Promise<Project[]> => {
     .order("sort_order")
     .order("created_at", { ascending: false });
   if (error) console.error("getProjects:", error.message);
-  return (data as Project[]) ?? [];
+  return ((data as Project[]) ?? []).sort(byIndustryThenOrder);
 });
 
 export const getProjectBySlug = cache(async (slug: string): Promise<Project | null> => {

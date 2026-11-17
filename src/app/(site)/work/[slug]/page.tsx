@@ -9,8 +9,6 @@ import { Reveal } from "@/components/site/Reveal";
 import { getProjectBySlug, getProjects } from "@/lib/data";
 import { SITE_NAME, SITE_URL, cn, initials, toEmbedUrl } from "@/lib/utils";
 
-export const revalidate = 3600;
-
 export async function generateStaticParams() {
   const projects = await getProjects();
   return projects.map((p) => ({ slug: p.slug }));

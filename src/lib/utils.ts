@@ -1,6 +1,10 @@
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://traffixmedia.in").replace(/\/$/, "");
 export const SITE_NAME = "Traffix Media";
 
+/** Prefix for files in /public when the site is served from a sub-path (e.g. GitHub Pages). */
+export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+export const asset = (path: string) => `${BASE_PATH}${path}`;
+
 export function slugify(input: string) {
   return input
     .toLowerCase()

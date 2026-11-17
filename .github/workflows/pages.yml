@@ -1,0 +1,76 @@
+# Builds the public website as static files and publishes it on GitHub Pages.
+#
+# Runs on every push to main, every hour (to pick up content edited in the admin panel),
+# and on demand: Actions tab → "Deploy to GitHub Pages" → Run workflow.
+#
+# One-time setup (repo Settings):
+#   • Pages → Build and deployment → Source: "GitHub Actions"
+#   • Secrets and variables → Actions → New repository secret:
+#       NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY
+#
+# The admin panel needs a server, so it is not included here — use it locally (npm run dev)
+# until the site moves to Vercel, where everything works without this workflow.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - run: npm ci
+
+      # Server-only parts (admin panel + its login proxy) can't run on static hosting
+      - name: Remove server-only routes
+        run: rm -rf src/app/admin src/proxy.ts
+
+      - name: Build static site
+        run: npx next build
+        env:
+          STATIC_EXPORT: "1"
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - run: touch out/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

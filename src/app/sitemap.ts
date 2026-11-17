@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getProjects } from "@/lib/data";
 import { SITE_URL } from "@/lib/utils";
 
-export const revalidate = 3600;
+export const dynamic = "force-static";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getProjects();

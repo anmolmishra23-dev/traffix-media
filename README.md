@@ -37,6 +37,18 @@ The site runs **without Supabase** and shows the built-in starting content (`src
 
 ## Deploy
 
+### GitHub Pages (temporary, static)
+
+`.github/workflows/pages.yml` builds the public pages as static HTML and publishes them on every push, every hour, and on demand (Actions → *Deploy to GitHub Pages* → *Run workflow*).
+
+One-time setup in the GitHub repo:
+1. **Settings → Pages → Source:** GitHub Actions
+2. **Settings → Secrets and variables → Actions:** add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Limitations on GitHub Pages: no admin panel online (run `npm run dev` locally to edit content; it uses the same database), content changes go live after the next hourly build, and images are not resized automatically. The contact form works.
+
+### Vercel / Netlify (full site)
+
 Works on any host that runs Next.js (Vercel, Netlify). Add the three environment variables in the host's dashboard, then point the domain's DNS at the host.
 
 > Vercel's free Hobby plan is for non-commercial use. For a client's business site, use Vercel Pro or Netlify's free tier.

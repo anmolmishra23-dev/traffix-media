@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { SiteSettings } from "@/lib/types";
-import { instagramUrl, telUrl, whatsappUrl } from "@/lib/utils";
+import { asset, instagramUrl, telUrl, whatsappUrl } from "@/lib/utils";
 import { InstagramIcon, MailIcon, PhoneIcon, WhatsappIcon } from "@/components/icons";
 
 export function Footer({ settings }: { settings: SiteSettings }) {
@@ -14,7 +14,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
       <div className="mx-auto max-w-7xl px-5 pt-16 pb-10 md:px-8 md:pt-24">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <Image src="/brand/logo-nav-light.png" alt="Traffix Media" width={583} height={210} className="h-12 w-auto" />
+            <Image src={asset("/brand/logo-nav-light.png")} alt="Traffix Media" width={583} height={210} className="h-12 w-auto" />
             <p className="mt-6 max-w-sm text-cream/70">{settings.tagline ?? "Be Seen. Be Known."}</p>
           </div>
 

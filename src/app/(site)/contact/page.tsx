@@ -5,8 +5,6 @@ import { Reveal } from "@/components/site/Reveal";
 import { getServices, getSettings } from "@/lib/data";
 import { instagramUrl, telUrl, whatsappUrl } from "@/lib/utils";
 
-export const revalidate = 3600;
-
 export const metadata: Metadata = {
   title: "Contact",
   description:

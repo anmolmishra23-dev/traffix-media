@@ -18,7 +18,7 @@ export type Project = {
   featured: boolean;
   published: boolean;
   sort_order: number;
-  category?: Pick<Category, "id" | "name" | "slug"> | null;
+  category?: (Pick<Category, "id" | "name" | "slug"> & { sort_order?: number }) | null;
 };
 
 export type Service = {

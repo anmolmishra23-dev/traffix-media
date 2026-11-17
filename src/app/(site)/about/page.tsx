@@ -3,8 +3,7 @@ import Image from "next/image";
 import { CtaBand } from "@/components/site/CtaBand";
 import { Reveal } from "@/components/site/Reveal";
 import { getProjects, getProjectsByCategory, getServices, getSettings } from "@/lib/data";
-
-export const revalidate = 3600;
+import { asset } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
@@ -43,7 +42,7 @@ export default async function AboutPage() {
           <div className="mt-16 grid grid-cols-1 items-start gap-14 lg:grid-cols-[1fr_1.2fr]">
             <Reveal className="relative mx-auto w-full max-w-md">
               <div className="rounded-[2rem] bg-maroon p-10">
-                <Image src="/brand/logo-circle.png" alt="Traffix Media" width={512} height={512} className="w-full" />
+                <Image src={asset("/brand/logo-circle.png")} alt="Traffix Media" width={512} height={512} className="w-full" />
               </div>
             </Reveal>
             <Reveal delay={120}>

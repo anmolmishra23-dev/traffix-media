@@ -5,9 +5,7 @@ import { CtaBand } from "@/components/site/CtaBand";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { Reveal } from "@/components/site/Reveal";
 import { getProjects, getProjectsByCategory, getServices, getSettings, getTestimonials } from "@/lib/data";
-import { SITE_NAME, SITE_URL, instagramUrl } from "@/lib/utils";
-
-export const revalidate = 3600;
+import { SITE_NAME, SITE_URL, asset, instagramUrl } from "@/lib/utils";
 
 export default async function HomePage() {
   const [settings, projects, groups, services, testimonials] = await Promise.all([
@@ -75,7 +73,7 @@ export default async function HomePage() {
             <div className="relative aspect-square">
               <div className="absolute inset-[6%] rounded-full bg-maroon/10 blur-3xl" />
               <Image
-                src="/brand/logo-circle.png"
+                src={asset("/brand/logo-circle.png")}
                 alt="Traffix Media logo — Be Seen. Be Known."
                 width={512}
                 height={512}

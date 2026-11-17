@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
-import { submitEnquiry, type ContactState } from "@/app/(site)/contact/actions";
+import { useState, useTransition, type FormEvent } from "react";
+import { submitEnquiry, type ContactState } from "@/lib/enquiry";
 import { ArrowUpRight, HeartBubble } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +11,15 @@ const field =
   "w-full rounded-xl border border-line bg-white/60 px-4 py-3.5 text-ink placeholder:text-muted/60 transition outline-none focus:border-maroon focus:bg-white focus:ring-4 focus:ring-maroon/10";
 
 export function ContactForm({ services }: { services: string[] }) {
-  const [state, action, pending] = useActionState<ContactState, FormData>(submitEnquiry, { status: "idle" });
+  const [state, setState] = useState<ContactState>({ status: "idle" });
+  const [pending, startTransition] = useTransition();
+
+  // Saves straight to Supabase from the browser, so it works on static hosting (GitHub Pages) too.
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    startTransition(async () => setState(await submitEnquiry(formData)));
+  };
 
   if (state.status === "success") {
     return (
@@ -26,26 +34,25 @@ export function ContactForm({ services }: { services: string[] }) {
   }
 
   const err = state.fieldErrors ?? {};
-  const v = state.values ?? {};
 
   return (
-    <form action={action} className="grid grid-cols-1 gap-5 sm:grid-cols-2" noValidate>
+    <form onSubmit={onSubmit} className="grid grid-cols-1 gap-5 sm:grid-cols-2" noValidate>
       <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
       <Field label="Your name *" error={err.name}>
-        <input name="name" defaultValue={v.name} required autoComplete="name" className={cn(field, err.name && "border-maroon")} placeholder="Full name" />
+        <input name="name" required autoComplete="name" className={cn(field, err.name && "border-maroon")} placeholder="Full name" />
       </Field>
       <Field label="Email *" error={err.email}>
-        <input name="email" defaultValue={v.email} type="email" required autoComplete="email" className={cn(field, err.email && "border-maroon")} placeholder="you@company.com" />
+        <input name="email" type="email" required autoComplete="email" className={cn(field, err.email && "border-maroon")} placeholder="you@company.com" />
       </Field>
       <Field label="Phone">
-        <input name="phone" defaultValue={v.phone} type="tel" autoComplete="tel" className={field} placeholder="+91" />
+        <input name="phone" type="tel" autoComplete="tel" className={field} placeholder="+91" />
       </Field>
       <Field label="Brand / company">
-        <input name="company" defaultValue={v.company} autoComplete="organization" className={field} placeholder="Brand name" />
+        <input name="company" autoComplete="organization" className={field} placeholder="Brand name" />
       </Field>
       <Field label="What do you need?">
-        <select name="service" className={field} defaultValue={v.service ?? ""} key={`s-${v.service}`}>
+        <select name="service" className={field} defaultValue="">
           <option value="">Select a service</option>
           {services.map((s) => (
             <option key={s}>{s}</option>
@@ -54,7 +61,7 @@ export function ContactForm({ services }: { services: string[] }) {
         </select>
       </Field>
       <Field label="Monthly budget">
-        <select name="budget" className={field} defaultValue={v.budget ?? ""} key={`b-${v.budget}`}>
+        <select name="budget" className={field} defaultValue="">
           <option value="">Select a range</option>
           {budgets.map((b) => (
             <option key={b}>{b}</option>
@@ -64,7 +71,7 @@ export function ContactForm({ services }: { services: string[] }) {
       <div className="sm:col-span-2">
         <Field label="Tell us about your project *" error={err.message}>
           <textarea
-            name="message" defaultValue={v.message}
+            name="message"
             required
             rows={5}
             className={cn(field, "resize-y", err.message && "border-maroon")}
