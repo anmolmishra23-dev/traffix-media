@@ -19,10 +19,34 @@ function friendly(error: { code?: string; message: string }) {
 
 // ---------- images ----------
 
-export async function uploadImage(db: Db, file: File, folder: string): Promise<string> {
-  if (!ALLOWED_TYPES.includes(file.type)) throw new Error(`${file.name}: only JPG, PNG, WebP, AVIF or GIF images are allowed.`);
-  if (file.size > MAX_UPLOAD_BYTES) throw new Error(`${file.name}: images must be under 10 MB.`);
-  const ext = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+/**
+ * Converts JPG / PNG uploads to WebP in the browser (max 1600 px, under 5 MB) so the site never serves JPGs.
+ * GIF, SVG, WebP and AVIF are uploaded as they are.
+ */
+async function toWebp(file: File): Promise<File> {
+  if (!["image/jpeg", "image/png"].includes(file.type) || typeof createImageBitmap === "undefined") return file;
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  for (const quality of [0.82, 0.72, 0.6]) {
+    const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/webp", quality));
+    if (blob && blob.type === "image/webp" && blob.size <= MAX_VIDEO_BYTES) {
+      return new File([blob], file.name.replace(/\.(jpe?g|png)$/i, "") + ".webp", { type: "image/webp" });
+    }
+  }
+  return file; // browser without WebP encoding — keep the original
+}
+
+export async function uploadImage(db: Db, original: File, folder: string): Promise<string> {
+  if (!ALLOWED_TYPES.includes(original.type)) throw new Error(`${original.name}: only JPG, PNG, WebP, AVIF, GIF or SVG images are allowed.`);
+  if (original.size > MAX_UPLOAD_BYTES * 3) throw new Error(`${original.name}: images must be under 30 MB.`);
+  const file = await toWebp(original);
+  if (file.size > MAX_UPLOAD_BYTES) throw new Error(`${original.name}: image is too large even after compression.`);
+  const ext = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "webp";
   const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
   const { error } = await db.storage.from(MEDIA_BUCKET).upload(path, file, {
     contentType: file.type,

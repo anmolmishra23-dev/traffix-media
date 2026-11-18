@@ -5,8 +5,11 @@ export const SITE_NAME = "Traffix Media";
 export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export const asset = (path: string) => `${BASE_PATH}${path}`;
 
-/** Media stored in the database is either a full URL (Supabase upload) or a site path like "/media/x.jpg". */
+/** Media stored in the database is either a full URL (Supabase upload) or a site path like "/media/x.webp". */
 export const mediaUrl = (src: string) => (src.startsWith("/") ? asset(src) : src);
+
+/** Poster frame for a video shipped with the site ("/media/…/video-1.mp4" → "…/video-1.webp"). */
+export const posterFor = (videoSrc: string) => (videoSrc.startsWith("/") ? videoSrc.replace(/\.(mp4|webm)$/, ".webp") : null);
 
 export function slugify(input: string) {
   return input

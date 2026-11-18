@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "@/components/icons";
 import { getSettings } from "@/lib/data";
-import { cn } from "@/lib/utils";
+import { cn, posterFor } from "@/lib/utils";
 import { AutoVideo } from "./AutoVideo";
 
 // "Ready to be seen?" — set against a wall of showreel clips (Site settings → showreel videos).
@@ -24,7 +24,7 @@ export async function CtaBand() {
                   i >= 2 && "hidden sm:block",
                 )}
               >
-                <AutoVideo src={src} poster={src.replace(/\.mp4$/, ".jpg")} />
+                <AutoVideo src={src} poster={posterFor(src)} />
               </div>
             ))}
           </div>

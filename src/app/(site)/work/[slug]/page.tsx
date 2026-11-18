@@ -10,14 +10,14 @@ import { ProjectCard } from "@/components/site/ProjectCard";
 import { Reveal } from "@/components/site/Reveal";
 import { SlideRail } from "@/components/site/SlideRail";
 import { getProjectBySlug, getProjects } from "@/lib/data";
-import { SITE_NAME, SITE_URL, cn, initials, mediaUrl, toEmbedUrl } from "@/lib/utils";
+import { SITE_NAME, SITE_URL, cn, initials, mediaUrl, posterFor, toEmbedUrl } from "@/lib/utils";
 
 export async function generateStaticParams() {
   const projects = await getProjects();
   return projects.map((p) => ({ slug: p.slug }));
 }
 
-/** Full URL for SEO tags (site paths like "/media/x.jpg" become absolute). */
+/** Full URL for SEO tags (site paths like "/media/x.webp" become absolute). */
 const absolute = (src: string) => (src.startsWith("/") ? `${SITE_URL}${src}` : src);
 
 function describe(p: NonNullable<Awaited<ReturnType<typeof getProjectBySlug>>>) {
@@ -58,7 +58,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
     .slice(0, 3);
 
   // Creatives = cover + gallery (a cover that is only a video poster is not a creative)
-  const isPoster = (src: string | null) => Boolean(src && /\/video-\d+\.jpg$/.test(src));
+  const isPoster = (src: string | null) => Boolean(src && /\/video-\d+\.(webp|jpg)$/.test(src));
   const images = [
     ...(project.cover_image_url && !isPoster(project.cover_image_url) ? [project.cover_image_url] : []),
     ...project.gallery,
@@ -198,7 +198,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
               {videos.map((src, i) => (
                 <Reveal as="li" key={src} delay={i * 100} className={cn("w-[62vw] max-w-[280px] shrink-0 snap-center sm:w-[240px]", i % 2 === 1 && "md:translate-y-10")}>
                   <Phone>
-                    <AutoVideo src={src} poster={src.replace(/\.(mp4|webm)$/, ".jpg")} label={`${project.title} reel ${i + 1}`} />
+                    <AutoVideo src={src} poster={posterFor(src)} label={`${project.title} reel ${i + 1}`} />
                   </Phone>
                 </Reveal>
               ))}
