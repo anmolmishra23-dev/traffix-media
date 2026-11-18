@@ -72,7 +72,6 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
     [...all.slice(pos + 1), ...all.slice(0, pos)].find((p) => p.cover_image_url || p.videos.length) ?? others[0] ?? null;
 
   const facts = [
-    images.length > 0 && { value: String(images.length), label: images.length === 1 ? "Creative" : "Creatives" },
     videos.length > 0 && { value: String(videos.length), label: videos.length === 1 ? "Reel" : "Reels" },
     project.category && { value: project.category.name, label: "Industry", small: true },
   ].filter(Boolean) as { value: string; label: string; small?: boolean }[];
@@ -215,7 +214,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
               <p className="text-sm font-semibold tracking-[0.2em] text-maroon uppercase">The creatives</p>
               <h2 className="font-display mt-3 text-4xl font-black tracking-tight uppercase md:text-6xl">Posts &amp; carousels</h2>
             </div>
-            <p className="max-w-sm text-muted">Swipe through {images.length} pieces we designed — tap any one to see it full size.</p>
+            <p className="max-w-sm text-muted">Swipe through the posts and carousels we designed — tap any one to see it full size.</p>
           </Reveal>
           <div className="mx-auto max-w-[1440px]">
             <SlideRail images={images} title={project.title} />

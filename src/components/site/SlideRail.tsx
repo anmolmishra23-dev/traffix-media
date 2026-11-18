@@ -59,7 +59,7 @@ export function SlideRail({ images, title }: { images: string[]; title: string }
                 className="object-cover transition duration-500 group-hover:scale-[1.04]"
               />
               <span className="absolute top-3 left-3 rounded-full bg-ink/70 px-2.5 py-1 font-mono text-[10px] tracking-wider text-cream backdrop-blur">
-                {String(i + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
+                {String(i + 1).padStart(2, "0")}
               </span>
               <span className="absolute right-3 bottom-3 flex size-9 items-center justify-center rounded-full bg-cream/90 text-maroon opacity-0 transition group-hover:opacity-100">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-4" aria-hidden="true">
@@ -135,7 +135,7 @@ function Lightbox({ images, title, start, onClose }: { images: string[]; title: 
       </div>
 
       <p className="absolute top-5 left-5 font-mono text-xs tracking-wider text-cream/70">
-        {title} · {String(index + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
+        {title} · {String(index + 1).padStart(2, "0")}
       </p>
       <button
         ref={closeRef}
