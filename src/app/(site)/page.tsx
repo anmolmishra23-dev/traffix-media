@@ -17,7 +17,7 @@ export default async function HomePage() {
     getTestimonials(),
   ]);
 
-  const featured = (projects.filter((p) => p.featured).length ? projects.filter((p) => p.featured) : projects).slice(0, 6);
+  const featured = (projects.filter((p) => p.featured).length ? projects.filter((p) => p.featured) : projects).slice(0, 9);
   // Headline: every sentence on its own line, the last one (the punchline) in maroon
   const lines = (settings.hero_heading ?? "Be seen. Be known.").split(/(?<=[.?!])\s+/).filter(Boolean);
   const brands = settings.stat_brands || `${projects.length}+`;

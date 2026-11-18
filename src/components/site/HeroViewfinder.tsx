@@ -31,7 +31,7 @@ export function HeroViewfinder({
   const [index, setIndex] = useState(0);
   const timecode = useRef<HTMLSpanElement>(null);
   // brands with video first — they make the viewfinder feel alive
-  const scenes = [...projects].sort((a, b) => Number(b.videos.length > 0) - Number(a.videos.length > 0)).slice(0, 6);
+  const scenes = [...projects].sort((a, b) => Number(b.videos.length > 0) - Number(a.videos.length > 0)).slice(0, 8);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
