@@ -7,12 +7,15 @@ import { CtaBand } from "@/components/site/CtaBand";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { Reveal } from "@/components/site/Reveal";
 import { getProjectBySlug, getProjects } from "@/lib/data";
-import { SITE_NAME, SITE_URL, cn, initials, toEmbedUrl } from "@/lib/utils";
+import { SITE_NAME, SITE_URL, cn, initials, mediaUrl, toEmbedUrl } from "@/lib/utils";
 
 export async function generateStaticParams() {
   const projects = await getProjects();
   return projects.map((p) => ({ slug: p.slug }));
 }
+
+/** Full URL for SEO tags (site paths like "/media/x.jpg" become absolute). */
+const absolute = (src: string) => (src.startsWith("/") ? `${SITE_URL}${src}` : src);
 
 function describe(p: NonNullable<Awaited<ReturnType<typeof getProjectBySlug>>>) {
   return (
@@ -34,7 +37,7 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
       title: `${project.title} | ${SITE_NAME}`,
       description,
       url: `/work/${project.slug}`,
-      ...(project.cover_image_url ? { images: [{ url: project.cover_image_url }] } : {}),
+      ...(project.cover_image_url ? { images: [{ url: absolute(project.cover_image_url) }] } : {}),
     },
   };
 }
@@ -56,7 +59,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
     url: `${SITE_URL}/work/${project.slug}`,
     genre: project.category?.name,
     creator: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
-    ...(project.cover_image_url ? { image: project.cover_image_url } : {}),
+    ...(project.cover_image_url ? { image: absolute(project.cover_image_url) } : {}),
   };
 
   return (
@@ -111,7 +114,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
             ) : project.cover_image_url ? (
               <div className="relative aspect-[16/9] overflow-hidden rounded-3xl">
                 <Image
-                  src={project.cover_image_url}
+                  src={mediaUrl(project.cover_image_url)}
                   alt={`${project.title} — ${project.category?.name ?? "project"} by Traffix Media`}
                   fill
                   priority
@@ -146,12 +149,29 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
             </Reveal>
           )}
 
+          {project.videos.length > 0 && (
+            <ul className={cn("mt-16 grid grid-cols-1 gap-5", project.videos.length > 1 && "sm:grid-cols-2")}>
+              {project.videos.map((src, i) => (
+                <Reveal as="li" key={src} delay={(i % 2) * 80} className="overflow-hidden rounded-2xl bg-ink">
+                  <video
+                    src={`${mediaUrl(src)}#t=0.1`}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="max-h-[80vh] w-full"
+                    aria-label={`${project.title} — video ${i + 1}`}
+                  />
+                </Reveal>
+              ))}
+            </ul>
+          )}
+
           {project.gallery.length > 0 && (
             <ul className="mt-16 grid grid-cols-1 gap-5 sm:grid-cols-2">
               {project.gallery.map((src, i) => (
                 <Reveal as="li" key={src} delay={(i % 2) * 80} className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-cream-2">
                   <Image
-                    src={src}
+                    src={mediaUrl(src)}
                     alt={`${project.title} — image ${i + 1}`}
                     fill
                     sizes="(min-width: 640px) 50vw, 100vw"

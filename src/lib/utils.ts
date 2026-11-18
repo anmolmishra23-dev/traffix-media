@@ -5,6 +5,9 @@ export const SITE_NAME = "Traffix Media";
 export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export const asset = (path: string) => `${BASE_PATH}${path}`;
 
+/** Media stored in the database is either a full URL (Supabase upload) or a site path like "/media/x.jpg". */
+export const mediaUrl = (src: string) => (src.startsWith("/") ? asset(src) : src);
+
 export function slugify(input: string) {
   return input
     .toLowerCase()

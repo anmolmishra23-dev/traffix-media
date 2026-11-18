@@ -26,12 +26,17 @@ create table if not exists public.projects (
   cover_image_url  text,
   video_url        text,
   gallery          text[] not null default '{}',
+  videos           text[] not null default '{}',   -- uploaded video files (mp4/webm), max 5 MB each
+  logo_url         text,                            -- brand logo (shown in the client strip)
   featured         boolean not null default false,
   published        boolean not null default true,
   sort_order       int not null default 0,
   created_at       timestamptz not null default now(),
   updated_at       timestamptz not null default now()
 );
+-- for databases created before these columns existed
+alter table public.projects add column if not exists videos text[] not null default '{}';
+alter table public.projects add column if not exists logo_url text;
 create index if not exists projects_category_idx on public.projects(category_id);
 
 create table if not exists public.services (
@@ -79,8 +84,14 @@ create table if not exists public.site_settings (
   instagram        text,
   whatsapp         text,
   location         text,
+  stat_brands      text default '50+',
+  stat_industries  text default '10+',
+  showreel_videos  text[] not null default '{}',     -- short loops used as section backgrounds
   updated_at       timestamptz not null default now()
 );
+alter table public.site_settings add column if not exists stat_brands text default '50+';
+alter table public.site_settings add column if not exists stat_industries text default '10+';
+alter table public.site_settings add column if not exists showreel_videos text[] not null default '{}';
 
 -- Emails allowed into /admin
 create table if not exists public.admin_users (

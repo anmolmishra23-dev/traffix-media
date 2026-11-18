@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CtaBand } from "@/components/site/CtaBand";
 import { Reveal } from "@/components/site/Reveal";
 import { WorkGrid } from "@/components/site/WorkGrid";
-import { getCategories, getProjects } from "@/lib/data";
+import { getCategories, getProjects, getSettings } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Our Work",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function WorkPage() {
-  const [categories, projects] = await Promise.all([getCategories(), getProjects()]);
+  const [categories, projects, settings] = await Promise.all([getCategories(), getProjects(), getSettings()]);
 
   return (
     <>
@@ -24,7 +24,7 @@ export default async function WorkPage() {
               Our work
             </h1>
             <p className="mt-6 max-w-2xl text-lg text-muted">
-              {projects.length} brands across {categories.filter((c) => projects.some((p) => p.category_id === c.id)).length} industries. Pick an
+              {settings.stat_brands || `${projects.length}+`} brands across {settings.stat_industries || `${categories.length}+`} industries. Pick an
               industry or browse everything.
             </p>
           </Reveal>

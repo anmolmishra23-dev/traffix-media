@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/lib/types";
-import { cn, initials } from "@/lib/utils";
+import { cn, initials, mediaUrl } from "@/lib/utils";
 import { ArrowUpRight, HeartBubble, PlayIcon } from "@/components/icons";
+import { AutoVideo } from "./AutoVideo";
 
 const tones = [
   "bg-maroon text-cream",
@@ -22,7 +23,8 @@ export function ProjectCard({
   size?: "md" | "lg";
 }) {
   const tone = tones[index % tones.length];
-  const hasImage = Boolean(project.cover_image_url);
+  const video = project.videos?.[0];
+  const hasImage = Boolean(project.cover_image_url || video);
 
   return (
     <Link
@@ -36,10 +38,17 @@ export function ProjectCard({
           !hasImage && tone,
         )}
       >
-        {hasImage ? (
+        {video ? (
+          <>
+            <div className="absolute inset-0 transition duration-700 group-hover:scale-105">
+              <AutoVideo src={video} poster={project.cover_image_url} />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/0 to-ink/0" />
+          </>
+        ) : hasImage ? (
           <>
             <Image
-              src={project.cover_image_url!}
+              src={mediaUrl(project.cover_image_url!)}
               alt={`${project.title} — ${project.category?.name ?? "project"} by Traffix Media`}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
@@ -59,7 +68,7 @@ export function ProjectCard({
           </div>
         )}
 
-        {project.video_url && (
+        {(project.video_url || project.videos?.length > 0) && (
           <span className="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-cream/90 px-3 py-1 text-xs font-semibold text-maroon">
             <PlayIcon className="size-3" /> Video
           </span>

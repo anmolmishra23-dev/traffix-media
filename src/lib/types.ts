@@ -15,6 +15,8 @@ export type Project = {
   cover_image_url: string | null;
   video_url: string | null;
   gallery: string[];
+  videos: string[];
+  logo_url: string | null;
   featured: boolean;
   published: boolean;
   sort_order: number;
@@ -62,4 +64,7 @@ export type SiteSettings = {
   instagram: string | null;
   whatsapp: string | null;
   location: string | null;
+  stat_brands: string | null;
+  stat_industries: string | null;
+  showreel_videos: string[];
 };

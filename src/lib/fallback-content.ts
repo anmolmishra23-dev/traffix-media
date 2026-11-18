@@ -4,7 +4,7 @@ import type { Category, Project, Service, SiteSettings, Testimonial } from "./ty
 
 export const fallbackSettings: SiteSettings = {
   tagline: "Be Seen. Be Known.",
-  hero_heading: "Be seen. Be known.",
+  hero_heading: "Your brand is worth millions. Why does your content look ordinary?",
   hero_subheading:
     "Traffix Media is a creative marketing and video production company helping brands across real estate, hospitality, lifestyle, technology and more get noticed — and remembered.",
   about_heading: "We make brands impossible to scroll past.",
@@ -15,6 +15,9 @@ export const fallbackSettings: SiteSettings = {
   instagram: "traffix_media",
   whatsapp: "918287818962",
   location: null,
+  stat_brands: "50+",
+  stat_industries: "10+",
+  showreel_videos: [],
 };
 
 const categoryList: [string, string][] = [
@@ -74,6 +77,8 @@ export const fallbackProjects: Project[] = projectList.map(([title, slug, catSlu
     cover_image_url: null,
     video_url: null,
     gallery: [],
+    videos: [],
+    logo_url: null,
     featured,
     published: true,
     sort_order: i,
@@ -83,6 +88,7 @@ export const fallbackProjects: Project[] = projectList.map(([title, slug, catSlu
 
 export const fallbackServices: Service[] = [
   ["Video Production", "Brand films, ad films, reels and event videos — from concept and shoot to final edit."],
+  ["Photo Shoots", "Product, jewellery, fashion and food shoots — styled, lit and retouched for campaigns, catalogues and social."],
   ["Social Media Management", "Strategy, content calendars, posting and community management across Instagram, Facebook, LinkedIn and YouTube."],
   ["Influencer Marketing", "Finding the right creators, managing collaborations and tracking results for campaigns that feel native."],
   ["Event Coverage", "Photo, video and live social coverage that turns a one-night event into weeks of content."],

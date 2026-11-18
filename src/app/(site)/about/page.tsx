@@ -23,9 +23,9 @@ export default async function AboutPage() {
   ]);
 
   const stats = [
-    { value: `${projects.length}+`, label: "Brands served" },
-    { value: String(groups.length), label: "Industries" },
-    { value: String(services.length), label: "Core services" },
+    { value: settings.stat_brands || `${projects.length}+`, label: "Brands served" },
+    { value: settings.stat_industries || `${groups.length}+`, label: "Industries" },
+    { value: `${services.length}+`, label: "Services" },
   ];
 
   return (

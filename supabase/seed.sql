@@ -7,7 +7,7 @@ insert into public.site_settings (id, tagline, hero_heading, hero_subheading, ab
 values (
   1,
   'Be Seen. Be Known.',
-  'Be seen. Be known.',
+  'Your brand is worth millions. Why does your content look ordinary?',
   'Traffix Media is a creative marketing and video production company helping brands across real estate, hospitality, lifestyle, technology and more get noticed — and remembered.',
   'We make brands impossible to scroll past.',
   'From launch campaigns for real estate developers to influencer drives for consumer brands and full event coverage, Traffix Media plans, produces and distributes content that earns attention. We work across industries, but the goal is always the same: get your brand seen by the right people, and make sure they remember it.',
@@ -65,10 +65,23 @@ on conflict (slug) do nothing;
 insert into public.services (title, description, sort_order)
 select * from (values
   ('Video Production',        'Brand films, ad films, reels and event videos — from concept and shoot to final edit.', 1),
-  ('Social Media Management', 'Strategy, content calendars, posting and community management across Instagram, Facebook, LinkedIn and YouTube.', 2),
-  ('Influencer Marketing',    'Finding the right creators, managing collaborations and tracking results for campaigns that feel native.', 3),
-  ('Event Coverage',          'Photo, video and live social coverage that turns a one-night event into weeks of content.', 4),
-  ('Brand Campaigns',         'Launch and awareness campaigns built around a clear idea, from concept to rollout.', 5),
-  ('Performance Marketing',   'Paid social campaigns on Meta and Google, optimised for reach, leads and sales.', 6)
+  ('Photo Shoots',            'Product, jewellery, fashion and food shoots — styled, lit and retouched for campaigns, catalogues and social.', 2),
+  ('Social Media Management', 'Strategy, content calendars, posting and community management across Instagram, Facebook, LinkedIn and YouTube.', 3),
+  ('Influencer Marketing',    'Finding the right creators, managing collaborations and tracking results for campaigns that feel native.', 4),
+  ('Event Coverage',          'Photo, video and live social coverage that turns a one-night event into weeks of content.', 5),
+  ('Brand Campaigns',         'Launch and awareness campaigns built around a clear idea, from concept to rollout.', 6),
+  ('Performance Marketing',   'Paid social campaigns on Meta and Google, optimised for reach, leads and sales.', 7)
 ) as v(title, description, sort_order)
 where not exists (select 1 from public.services);
+
+-- Client media (files live in public/media; paths are stored here)
+update public.projects set cover_image_url = '/media/projects/eattaley-cafe/01.jpg', gallery = '{/media/projects/eattaley-cafe/02.jpg,/media/projects/eattaley-cafe/03.jpg,/media/projects/eattaley-cafe/04.jpg,/media/projects/eattaley-cafe/05.jpg,/media/projects/eattaley-cafe/06.jpg,/media/projects/eattaley-cafe/07.jpg,/media/projects/eattaley-cafe/08.jpg,/media/projects/eattaley-cafe/09.jpg}', videos = '{}', logo_url = '/media/logos/eattaley-cafe.png' where slug = 'eattaley-cafe';
+update public.projects set cover_image_url = '/media/projects/grand-buses-india/01.jpg', gallery = '{/media/projects/grand-buses-india/02.jpg,/media/projects/grand-buses-india/03.jpg,/media/projects/grand-buses-india/04.jpg,/media/projects/grand-buses-india/05.jpg,/media/projects/grand-buses-india/06.jpg,/media/projects/grand-buses-india/07.jpg,/media/projects/grand-buses-india/08.jpg,/media/projects/grand-buses-india/09.jpg,/media/projects/grand-buses-india/10.jpg,/media/projects/grand-buses-india/11.jpg,/media/projects/grand-buses-india/12.jpg}', videos = '{/media/projects/grand-buses-india/video-1.mp4}', logo_url = '/media/logos/grand-buses-india.png' where slug = 'grand-buses-india';
+update public.projects set cover_image_url = '/media/projects/rearco/01.jpg', gallery = '{/media/projects/rearco/02.jpg,/media/projects/rearco/03.jpg,/media/projects/rearco/04.jpg,/media/projects/rearco/05.jpg,/media/projects/rearco/06.jpg,/media/projects/rearco/07.jpg,/media/projects/rearco/08.jpg,/media/projects/rearco/09.jpg}', videos = '{/media/projects/rearco/video-1.mp4,/media/projects/rearco/video-2.mp4,/media/projects/rearco/video-3.mp4}', logo_url = '/media/logos/rearco.png' where slug = 'rearco';
+update public.projects set cover_image_url = '/media/projects/fllexibott/01.jpg', gallery = '{/media/projects/fllexibott/02.jpg,/media/projects/fllexibott/03.jpg,/media/projects/fllexibott/04.jpg,/media/projects/fllexibott/05.jpg,/media/projects/fllexibott/06.jpg,/media/projects/fllexibott/07.jpg,/media/projects/fllexibott/08.jpg,/media/projects/fllexibott/09.jpg,/media/projects/fllexibott/10.jpg,/media/projects/fllexibott/11.jpg}', videos = '{}', logo_url = '/media/logos/fllexibott.png' where slug = 'fllexibott';
+update public.projects set cover_image_url = '/media/projects/the-raconteur-magazine/01.jpg', gallery = '{/media/projects/the-raconteur-magazine/02.jpg,/media/projects/the-raconteur-magazine/03.jpg,/media/projects/the-raconteur-magazine/04.jpg,/media/projects/the-raconteur-magazine/05.jpg,/media/projects/the-raconteur-magazine/06.jpg,/media/projects/the-raconteur-magazine/07.jpg,/media/projects/the-raconteur-magazine/08.jpg,/media/projects/the-raconteur-magazine/09.jpg,/media/projects/the-raconteur-magazine/10.jpg}', videos = '{}', logo_url = '/media/logos/the-raconteur-magazine.png' where slug = 'the-raconteur-magazine';
+update public.projects set cover_image_url = '/media/projects/sanmati-jewellers/01.jpg', gallery = '{/media/projects/sanmati-jewellers/02.jpg,/media/projects/sanmati-jewellers/03.jpg,/media/projects/sanmati-jewellers/04.jpg,/media/projects/sanmati-jewellers/05.jpg,/media/projects/sanmati-jewellers/06.jpg,/media/projects/sanmati-jewellers/07.jpg,/media/projects/sanmati-jewellers/08.jpg,/media/projects/sanmati-jewellers/09.jpg,/media/projects/sanmati-jewellers/10.jpg,/media/projects/sanmati-jewellers/11.jpg,/media/projects/sanmati-jewellers/12.jpg,/media/projects/sanmati-jewellers/13.jpg,/media/projects/sanmati-jewellers/14.jpg,/media/projects/sanmati-jewellers/15.jpg,/media/projects/sanmati-jewellers/16.jpg,/media/projects/sanmati-jewellers/17.jpg}', videos = '{/media/projects/sanmati-jewellers/video-2.mp4,/media/projects/sanmati-jewellers/video-3.mp4,/media/projects/sanmati-jewellers/video-1.mp4}', logo_url = '/media/logos/sanmati-jewellers.png' where slug = 'sanmati-jewellers';
+update public.projects set cover_image_url = '/media/projects/green-vidyut/video-1.jpg', gallery = '{}', videos = '{/media/projects/green-vidyut/video-1.mp4}' where slug = 'green-vidyut';
+update public.projects set cover_image_url = '/media/projects/amalfi-infrastructures/video-1.jpg', gallery = '{}', videos = '{/media/projects/amalfi-infrastructures/video-1.mp4}' where slug = 'amalfi-infrastructures';
+update public.projects set featured = (slug in ('sanmati-jewellers','rearco','grand-buses-india','green-vidyut','amalfi-infrastructures','fllexibott'));
+update public.site_settings set stat_brands = '50+', stat_industries = '10+', showreel_videos = '{/media/showreel/1.mp4,/media/showreel/2.mp4,/media/showreel/3.mp4,/media/showreel/4.mp4}' where id = 1;

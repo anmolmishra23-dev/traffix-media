@@ -7,7 +7,9 @@ type Db = SupabaseClient;
 export type AdminTable = "projects" | "categories" | "services" | "testimonials" | "enquiries";
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif", "image/svg+xml"];
+const MAX_VIDEO_BYTES = 5 * 1024 * 1024;
+const VIDEO_TYPES = ["video/mp4", "video/webm"];
 
 function friendly(error: { code?: string; message: string }) {
   if (error.code === "23505") return "That URL slug is already used by another item.";
@@ -27,6 +29,18 @@ export async function uploadImage(db: Db, file: File, folder: string): Promise<s
     cacheControl: "31536000",
     upsert: false,
   });
+  if (error) throw new Error(`Upload failed: ${error.message}`);
+  return db.storage.from(MEDIA_BUCKET).getPublicUrl(path).data.publicUrl;
+}
+
+/** Uploads a short video clip (MP4/WebM, max 5 MB). */
+export async function uploadVideo(db: Db, file: File, folder: string): Promise<string> {
+  if (!VIDEO_TYPES.includes(file.type)) throw new Error(`${file.name}: only MP4 or WebM videos are allowed.`);
+  if (file.size > MAX_VIDEO_BYTES)
+    throw new Error(`${file.name} is ${(file.size / 1048576).toFixed(1)} MB — videos must be 5 MB or less. Export a shorter or smaller clip.`);
+  const ext = file.type === "video/webm" ? "webm" : "mp4";
+  const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await db.storage.from(MEDIA_BUCKET).upload(path, file, { contentType: file.type, cacheControl: "31536000", upsert: false });
   if (error) throw new Error(`Upload failed: ${error.message}`);
   return db.storage.from(MEDIA_BUCKET).getPublicUrl(path).data.publicUrl;
 }
@@ -115,6 +129,25 @@ export async function saveProject(db: Db, fd: FormData, existing: Project | null
     if (file instanceof File && file.size > 0) gallery.push(await uploadImage(db, file, `projects/${slug}`));
   }
 
+  let videos = [...(existing?.videos ?? [])];
+  const removeVideos = new Set(fd.getAll("remove_video").map(String));
+  removed.push(...videos.filter((v) => removeVideos.has(v)));
+  videos = videos.filter((v) => !removeVideos.has(v));
+  for (const file of fd.getAll("videos")) {
+    if (file instanceof File && file.size > 0) videos.push(await uploadVideo(db, file, `projects/${slug}`));
+  }
+
+  let logo = existing?.logo_url ?? null;
+  if (bool(fd, "remove_logo") && logo) {
+    removed.push(logo);
+    logo = null;
+  }
+  const logoFile = fd.get("logo");
+  if (logoFile instanceof File && logoFile.size > 0) {
+    if (logo) removed.push(logo);
+    logo = await uploadImage(db, logoFile, `logos`);
+  }
+
   const id = await saveRow(db, "projects", existing?.id ?? null, {
     title,
     slug,
@@ -124,6 +157,8 @@ export async function saveProject(db: Db, fd: FormData, existing: Project | null
     video_url: optional(fd, "video_url"),
     cover_image_url: cover,
     gallery,
+    videos,
+    logo_url: logo,
     featured: bool(fd, "featured"),
     published: bool(fd, "published"),
     sort_order: int(fd, "sort_order"),
@@ -135,7 +170,7 @@ export async function saveProject(db: Db, fd: FormData, existing: Project | null
 
 export async function deleteProject(db: Db, project: Project) {
   await deleteRow(db, "projects", project.id);
-  await deleteImages(db, [project.cover_image_url, ...(project.gallery ?? [])]);
+  await deleteImages(db, [project.cover_image_url, project.logo_url, ...(project.gallery ?? []), ...(project.videos ?? [])]);
 }
 
 // ---------- account ----------

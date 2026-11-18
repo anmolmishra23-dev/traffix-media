@@ -18,6 +18,8 @@ const FIELDS = [
   "instagram",
   "whatsapp",
   "location",
+  "stat_brands",
+  "stat_industries",
 ] as const;
 
 export default function SettingsAdmin() {
@@ -53,7 +55,7 @@ export default function SettingsAdmin() {
         <form key={JSON.stringify(s)} onSubmit={onSubmit} className="space-y-6">
           <Card className="space-y-5">
             <h2 className="font-semibold">Home page</h2>
-            <Field label="Main headline" hint="Each sentence goes on its own line. The first one is shown in maroon.">
+            <Field label="Main headline" hint="Each sentence goes on its own line. The last one is shown in maroon.">
               <input name="hero_heading" defaultValue={s.hero_heading ?? ""} className={inputClass} />
             </Field>
             <Field label="Intro text">
@@ -62,6 +64,18 @@ export default function SettingsAdmin() {
             <Field label="Tagline" hint="Shown in the footer.">
               <input name="tagline" defaultValue={s.tagline ?? ""} className={inputClass} />
             </Field>
+          </Card>
+
+          <Card className="space-y-5">
+            <h2 className="font-semibold">Numbers shown on the site</h2>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field label="Brands worked with" hint='e.g. "50+"'>
+                <input name="stat_brands" defaultValue={s.stat_brands ?? ""} className={inputClass} placeholder="50+" />
+              </Field>
+              <Field label="Industries" hint='e.g. "10+"'>
+                <input name="stat_industries" defaultValue={s.stat_industries ?? ""} className={inputClass} placeholder="10+" />
+              </Field>
+            </div>
           </Card>
 
           <Card className="space-y-5">

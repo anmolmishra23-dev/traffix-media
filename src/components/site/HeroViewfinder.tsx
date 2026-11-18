@@ -4,14 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { Project } from "@/lib/types";
-import { cn, initials } from "@/lib/utils";
+import { cn, initials, mediaUrl } from "@/lib/utils";
 import { HeartBubble } from "@/components/icons";
 
 // Hero visual for a video production company: a camera viewfinder (REC, running timecode,
 // framing guides) that cycles through the featured clients as "scenes".
 // Uses each project's cover image once uploaded in the admin.
 
-const SCENE_MS = 3800;
+const SCENE_MS = 6500;
 const FPS = 25;
 const tones = [
   "from-maroon via-maroon-2 to-maroon-deep",
@@ -21,16 +21,17 @@ const tones = [
 
 export function HeroViewfinder({
   projects,
-  brandCount,
-  industryCount,
+  brands,
+  industries,
 }: {
   projects: Project[];
-  brandCount: number;
-  industryCount: number;
+  brands: string;
+  industries: string;
 }) {
   const [index, setIndex] = useState(0);
   const timecode = useRef<HTMLSpanElement>(null);
-  const scenes = projects.slice(0, 6);
+  // brands with video first — they make the viewfinder feel alive
+  const scenes = [...projects].sort((a, b) => Number(b.videos.length > 0) - Number(a.videos.length > 0)).slice(0, 6);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -56,7 +57,22 @@ export function HeroViewfinder({
 
   return (
     <div className="relative mx-auto aspect-[4/5] w-full max-w-[480px]">
-      <div className="absolute inset-[8%] rounded-full bg-maroon/20 blur-3xl" />
+      {/* ambient light: a blurred copy of the current scene glows behind the camera */}
+      <div aria-hidden="true" className="absolute -inset-[6%] overflow-hidden rounded-[3rem] opacity-60 blur-3xl">
+        {scenes.map((p, i) =>
+          p.cover_image_url ? (
+            <Image
+              key={p.id}
+              src={mediaUrl(p.cover_image_url)}
+              alt=""
+              fill
+              sizes="200px"
+              className={cn("object-cover transition-opacity duration-[1500ms]", i === index ? "opacity-100" : "opacity-0")}
+            />
+          ) : null,
+        )}
+        <div className="absolute inset-0 bg-maroon/30 mix-blend-multiply" />
+      </div>
 
       {/* camera body / viewfinder */}
       <div className="absolute inset-0 overflow-hidden rounded-[2rem] bg-ink shadow-2xl shadow-maroon/30 ring-1 ring-ink/10">
@@ -71,9 +87,24 @@ export function HeroViewfinder({
               i === index ? "scale-100 opacity-100" : "scale-110 opacity-0",
             )}
           >
-            {p.cover_image_url ? (
+            {p.videos.length > 0 && i === index ? (
               <>
-                <Image src={p.cover_image_url} alt="" fill priority={i === 0} sizes="480px" className="object-cover" />
+                <video
+                  key={p.videos[0]}
+                  src={mediaUrl(p.videos[0])}
+                  poster={p.cover_image_url ? mediaUrl(p.cover_image_url) : undefined}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  aria-hidden="true"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-black/40" />
+              </>
+            ) : p.cover_image_url ? (
+              <>
+                <Image src={mediaUrl(p.cover_image_url)} alt="" fill priority={i === 0} sizes="480px" className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/40" />
               </>
             ) : (
@@ -159,11 +190,11 @@ export function HeroViewfinder({
 
       {/* stats */}
       <div className="absolute -bottom-5 -left-3 z-10 rounded-2xl bg-white px-5 py-3.5 shadow-xl shadow-maroon/10 md:-left-8">
-        <p className="font-display text-3xl font-black text-maroon">{brandCount}+</p>
+        <p className="font-display text-3xl font-black text-maroon">{brands}</p>
         <p className="text-sm text-muted">brands served</p>
       </div>
       <div className="absolute top-[18%] -right-3 z-10 rounded-2xl bg-maroon px-5 py-3.5 text-cream shadow-xl md:-right-8">
-        <p className="font-display text-3xl font-black">{industryCount}</p>
+        <p className="font-display text-3xl font-black">{industries}</p>
         <p className="text-sm text-cream/75">industries</p>
       </div>
       <HeartBubble className="animate-float absolute -right-2 bottom-[22%] z-10 size-12 text-cream drop-shadow-lg [animation-delay:1.8s] [--r:10deg] md:-right-6" />

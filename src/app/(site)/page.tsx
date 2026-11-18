@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, ChatBubble, HeartBubble } from "@/components/icons";
 import { CtaBand } from "@/components/site/CtaBand";
@@ -5,7 +6,7 @@ import { HeroViewfinder } from "@/components/site/HeroViewfinder";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { Reveal } from "@/components/site/Reveal";
 import { getProjects, getProjectsByCategory, getServices, getSettings, getTestimonials } from "@/lib/data";
-import { SITE_NAME, SITE_URL, instagramUrl } from "@/lib/utils";
+import { SITE_NAME, SITE_URL, cn, instagramUrl, mediaUrl } from "@/lib/utils";
 
 export default async function HomePage() {
   const [settings, projects, groups, services, testimonials] = await Promise.all([
@@ -17,7 +18,10 @@ export default async function HomePage() {
   ]);
 
   const featured = (projects.filter((p) => p.featured).length ? projects.filter((p) => p.featured) : projects).slice(0, 6);
-  const [first, ...rest] = (settings.hero_heading ?? "Be seen. Be known.").split(/(?<=\.)\s+/);
+  // Headline: every sentence on its own line, the last one (the punchline) in maroon
+  const lines = (settings.hero_heading ?? "Be seen. Be known.").split(/(?<=[.?!])\s+/).filter(Boolean);
+  const brands = settings.stat_brands || `${projects.length}+`;
+  const industries = settings.stat_industries || `${groups.length}+`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -37,7 +41,12 @@ export default async function HomePage() {
 
       {/* ---------- Hero ---------- */}
       <section className="relative overflow-hidden px-5 pt-10 pb-20 md:px-8 md:pt-16 md:pb-28">
-        <div className="mx-auto grid grid-cols-1 max-w-7xl items-center gap-14 lg:grid-cols-[1.5fr_1fr]">
+        {/* backdrop: soft studio light */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-40 right-[-10%] size-[720px] rounded-full bg-maroon/[0.09] blur-3xl" />
+          <div className="absolute bottom-[-30%] left-[-10%] size-[520px] rounded-full bg-sand/60 blur-3xl" />
+        </div>
+        <div className="relative mx-auto grid grid-cols-1 max-w-7xl items-center gap-14 lg:grid-cols-[1.5fr_1fr]">
           <div>
             <Reveal>
               <p className="inline-flex items-center gap-2 rounded-full border border-line bg-white/50 px-4 py-1.5 text-sm font-medium text-muted">
@@ -45,9 +54,12 @@ export default async function HomePage() {
               </p>
             </Reveal>
             <Reveal delay={80}>
-              <h1 className="font-display mt-7 text-[clamp(3.1rem,7.4vw,6.6rem)] leading-[0.88] font-black tracking-[-0.035em] uppercase">
-                <span className="block text-maroon">{first}</span>
-                {rest.length > 0 && <span className="block">{rest.join(" ")}</span>}
+              <h1 className="font-display mt-7 text-[clamp(2.5rem,5.2vw,4.6rem)] leading-[0.95] font-black tracking-[-0.03em] text-balance uppercase">
+                {lines.map((line, i) => (
+                  <span key={i} className={i === lines.length - 1 && lines.length > 1 ? "mt-2 block text-maroon" : "block"}>
+                    {line}
+                  </span>
+                ))}
               </h1>
             </Reveal>
             <Reveal delay={160}>
@@ -70,20 +82,31 @@ export default async function HomePage() {
           </div>
 
           <Reveal delay={200}>
-            <HeroViewfinder projects={featured} brandCount={projects.length} industryCount={groups.length} />
+            <HeroViewfinder projects={featured} brands={brands} industries={industries} />
           </Reveal>
         </div>
       </section>
 
       {/* ---------- Client marquee ---------- */}
-      <section aria-label="Brands we have worked with" className="overflow-hidden border-y border-maroon-deep bg-maroon py-5 text-cream">
+      <section aria-label="Brands we have worked with" className="overflow-hidden border-y border-maroon-deep bg-maroon py-6 text-cream">
         <div className="animate-marquee flex w-max items-center">
           {[0, 1].map((dup) => (
             <ul key={dup} className="flex items-center" aria-hidden={dup === 1}>
               {projects.map((p) => (
                 <li key={p.id} className="flex items-center">
-                  <span className="font-display px-6 text-2xl font-extrabold tracking-tight whitespace-nowrap uppercase md:text-3xl">
-                    {p.title}
+                  <span className="flex items-center px-8">
+                    {/* logo when we have one (every logo already includes the brand name), otherwise the name */}
+                    {p.logo_url ? (
+                      <Image
+                        src={mediaUrl(p.logo_url)}
+                        alt={dup === 0 ? p.title : ""}
+                        width={220}
+                        height={88}
+                        className="h-14 w-auto max-w-[200px] object-contain brightness-0 invert md:h-16"
+                      />
+                    ) : (
+                      <span className="font-display text-2xl font-extrabold tracking-tight whitespace-nowrap uppercase md:text-3xl">{p.title}</span>
+                    )}
                   </span>
                   <HeartBubble className="size-6 shrink-0 text-cream/40" />
                 </li>
@@ -126,7 +149,7 @@ export default async function HomePage() {
             <div>
               <p className="text-sm font-semibold tracking-[0.2em] text-cream/50 uppercase">Industries</p>
               <h2 className="font-display mt-3 text-4xl leading-[0.95] font-black tracking-tight uppercase md:text-6xl">
-                {groups.length} industries.
+                {industries} industries.
                 <br />
                 <span className="text-maroon-2">One obsession.</span>
               </h2>
@@ -141,13 +164,13 @@ export default async function HomePage() {
               <Reveal as="li" key={category.id} delay={Math.min(i, 4) * 40}>
                 <Link
                   href={`/work#${category.slug}`}
-                  className="group grid grid-cols-[3rem_1fr_auto] items-baseline gap-4 border-b border-cream/10 py-6 transition hover:bg-cream/[0.03] md:grid-cols-[5rem_1.1fr_1.6fr_auto] md:py-8"
+                  className="group grid grid-cols-[3rem_1fr_auto] items-baseline gap-4 border-b border-cream/10 px-3 py-6 transition-colors duration-300 hover:border-transparent hover:bg-maroon md:grid-cols-[5rem_1.1fr_1.6fr_auto] md:rounded-2xl md:px-6 md:py-8"
                 >
-                  <span className="font-display text-sm font-bold text-cream/40">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="font-display text-2xl font-extrabold tracking-tight uppercase transition group-hover:translate-x-2 group-hover:text-[#e7a3ab] md:text-4xl">
+                  <span className="font-display text-sm font-bold text-cream/40 group-hover:text-cream/80">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="font-display text-2xl font-extrabold tracking-tight uppercase transition group-hover:translate-x-2 md:text-4xl">
                     {category.name}
                   </span>
-                  <span className="col-span-2 col-start-2 text-cream/55 md:col-span-1 md:col-start-auto">
+                  <span className="col-span-2 col-start-2 text-cream/55 group-hover:text-cream/90 md:col-span-1 md:col-start-auto">
                     {items.map((p) => p.title).join(" · ")}
                   </span>
                   <ArrowUpRight className="row-start-1 size-5 justify-self-end text-cream/40 transition group-hover:rotate-45 group-hover:text-cream md:row-auto" />
@@ -168,12 +191,21 @@ export default async function HomePage() {
                 Everything your brand needs to be seen
               </h2>
             </Reveal>
-            <ul className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
               {services.map((s, i) => (
-                <Reveal as="li" key={s.id} delay={(i % 3) * 80} className="group bg-cream p-8 transition hover:bg-white md:p-10">
-                  <span className="font-display text-sm font-bold text-maroon">{String(i + 1).padStart(2, "0")}</span>
-                  <h3 className="font-display mt-8 text-2xl font-extrabold tracking-tight">{s.title}</h3>
-                  {s.description && <p className="mt-3 leading-relaxed text-muted">{s.description}</p>}
+                <Reveal
+                  as="li"
+                  key={s.id}
+                  delay={(i % 4) * 70}
+                  className={cn(
+                    "group bg-cream p-8 transition-colors duration-300 hover:bg-maroon md:p-10",
+                    // lead service spans two columns when the count is odd, so the grid has no gaps
+                    i === 0 && services.length % 2 === 1 && "sm:col-span-2",
+                  )}
+                >
+                  <span className="font-display text-sm font-bold text-maroon transition-colors group-hover:text-cream/70">{String(i + 1).padStart(2, "0")}</span>
+                  <h3 className="font-display mt-8 text-2xl font-extrabold tracking-tight transition-colors group-hover:text-cream">{s.title}</h3>
+                  {s.description && <p className="mt-3 leading-relaxed text-muted transition-colors group-hover:text-cream/80">{s.description}</p>}
                 </Reveal>
               ))}
             </ul>

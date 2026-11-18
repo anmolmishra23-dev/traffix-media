@@ -6,6 +6,7 @@ import { useAdmin } from "@/components/admin/AdminApp";
 import { useLoad } from "@/components/admin/hooks";
 import { Badge, Flash, Loading, PageHeader } from "@/components/admin/ui";
 import type { Project } from "@/lib/types";
+import { mediaUrl } from "@/lib/utils";
 
 export default function ProjectsAdmin() {
   const { db } = useAdmin();
@@ -42,7 +43,7 @@ export default function ProjectsAdmin() {
               <li key={p.id}>
                 <Link href={`/admin/projects/edit?id=${p.id}`} className="flex items-center gap-4 px-4 py-3 transition hover:bg-zinc-50">
                   <div className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-[#6a1a23]/10">
-                    {p.cover_image_url && <Image src={p.cover_image_url} alt="" fill sizes="48px" unoptimized className="object-cover" />}
+                    {p.cover_image_url && <Image src={mediaUrl(p.cover_image_url)} alt="" fill sizes="48px" unoptimized className="object-cover" />}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium">{p.title}</p>
@@ -50,7 +51,7 @@ export default function ProjectsAdmin() {
                   </div>
                   <div className="hidden gap-1.5 sm:flex">
                     {p.featured && <Badge tone="maroon">Featured</Badge>}
-                    {p.video_url && <Badge>Video</Badge>}
+                    {(p.video_url || p.videos.length > 0) && <Badge>Video</Badge>}
                     {!p.published && <Badge tone="amber">Hidden</Badge>}
                   </div>
                   <span className="text-zinc-400">→</span>

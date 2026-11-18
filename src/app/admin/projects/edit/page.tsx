@@ -7,6 +7,7 @@ import { Suspense, type FormEvent } from "react";
 import { useAdmin } from "@/components/admin/AdminApp";
 import { useLoad, useTask } from "@/components/admin/hooks";
 import { Button, Card, Checkbox, Field, Flash, Loading, PageHeader, inputClass } from "@/components/admin/ui";
+import { mediaUrl } from "@/lib/utils";
 import { deleteProject, refreshSite, saveProject, savedMessage } from "@/lib/admin-api";
 import type { Category, Project } from "@/lib/types";
 
@@ -83,7 +84,7 @@ function EditProject() {
       <Flash ok={flash.ok} error={flash.error} />
 
       {/* key: re-mount the form with fresh values after each save */}
-      <form key={`${project?.id}-${project?.cover_image_url}-${project?.gallery.length}`} onSubmit={onSubmit} onChange={() => flash.ok && setFlash({})} className="space-y-6">
+      <form key={`${project?.id}-${project?.cover_image_url}-${project?.gallery.length}-${project?.videos.length}-${project?.logo_url}`} onSubmit={onSubmit} onChange={() => flash.ok && setFlash({})} className="space-y-6">
         <Card className="space-y-5">
           <h2 className="font-semibold">Details</h2>
           <div className="grid gap-5 sm:grid-cols-2">
@@ -124,7 +125,7 @@ function EditProject() {
             {project?.cover_image_url && (
               <div className="mb-3 flex items-center gap-4">
                 <div className="relative size-24 overflow-hidden rounded-lg border border-zinc-200">
-                  <Image src={project.cover_image_url} alt="" fill sizes="96px" unoptimized className="object-cover" />
+                  <Image src={mediaUrl(project.cover_image_url)} alt="" fill sizes="96px" unoptimized className="object-cover" />
                 </div>
                 <Checkbox name="remove_cover" label="Remove this image" />
               </div>
@@ -138,7 +139,7 @@ function EditProject() {
                 {project.gallery.map((src) => (
                   <label key={src} className="block cursor-pointer">
                     <div className="relative aspect-square overflow-hidden rounded-lg border border-zinc-200">
-                      <Image src={src} alt="" fill sizes="120px" unoptimized className="object-cover" />
+                      <Image src={mediaUrl(src)} alt="" fill sizes="120px" unoptimized className="object-cover" />
                     </div>
                     <span className="mt-1 flex items-center gap-1.5 text-xs text-zinc-600">
                       <input type="checkbox" name="remove_gallery" value={src} className="accent-red-600" /> Remove
@@ -148,6 +149,37 @@ function EditProject() {
               </div>
             )}
             <input name="gallery" type="file" accept="image/*" multiple className={fileInput} />
+          </Field>
+        </Card>
+
+        <Card className="space-y-5">
+          <h2 className="font-semibold">Videos &amp; logo</h2>
+          <Field label="Video clips" hint="MP4 or WebM, 5 MB max each. Short silent loops (5–10 seconds) work best — they play on cards and in the hero.">
+            {project && project.videos.length > 0 && (
+              <div className="mb-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
+                {project.videos.map((src) => (
+                  <label key={src} className="block cursor-pointer">
+                    <video src={mediaUrl(src)} muted playsInline preload="metadata" className="aspect-[9/16] w-full rounded-lg border border-zinc-200 bg-black object-cover" />
+                    <span className="mt-1 flex items-center gap-1.5 text-xs text-zinc-600">
+                      <input type="checkbox" name="remove_video" value={src} className="accent-red-600" /> Remove
+                    </span>
+                  </label>
+                ))}
+              </div>
+            )}
+            <input name="videos" type="file" accept="video/mp4,video/webm" multiple className={fileInput} />
+          </Field>
+          <Field label="Brand logo" hint="PNG with a transparent background (or SVG). Shown in the scrolling brand strip on the home page.">
+            {project?.logo_url && (
+              <div className="mb-3 flex items-center gap-4">
+                <div className="flex h-16 w-32 items-center justify-center rounded-lg bg-[#6a1a23] p-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={mediaUrl(project.logo_url)} alt="" className="max-h-full max-w-full object-contain brightness-0 invert" />
+                </div>
+                <Checkbox name="remove_logo" label="Remove logo" />
+              </div>
+            )}
+            <input name="logo" type="file" accept="image/png,image/svg+xml,image/webp" className={fileInput} />
           </Field>
         </Card>
 
