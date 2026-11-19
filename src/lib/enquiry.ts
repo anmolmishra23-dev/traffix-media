@@ -32,7 +32,8 @@ export async function submitEnquiry(formData: FormData): Promise<ContactState> {
     email: get("email"),
     phone: get("phone") || null,
     company: get("company") || null,
-    service: get("service") || null,
+    // several services can be ticked on the form
+    service: formData.getAll("service").map(String).map((v) => v.trim()).filter(Boolean).join(", ").slice(0, limits.service) || null,
     budget: get("budget") || null,
     message: get("message"),
   };
