@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useToast } from "./toast";
 
 /** Loads data on mount (and whenever `key` changes); `reload()` fetches again. */
 export function useLoad<T>(load: () => Promise<T>, key: string = "") {
@@ -24,27 +25,27 @@ export function useLoad<T>(load: () => Promise<T>, key: string = "") {
   return { data, error, reload };
 }
 
-export type FlashState = { ok?: string; error?: string };
-
-/** Runs an async admin task with a pending flag and a success / error message. */
+/** Runs an async admin task with a pending flag; the result is shown as a toast. */
 export function useTask() {
   const [pending, setPending] = useState(false);
-  const [flash, setFlash] = useState<FlashState>({});
+  const toast = useToast();
 
-  const run = useCallback(async (task: () => Promise<string | void>) => {
-    setPending(true);
-    setFlash({});
-    try {
-      const ok = await task();
-      if (ok) setFlash({ ok });
-      return true;
-    } catch (e) {
-      setFlash({ error: (e as Error).message });
-      return false;
-    } finally {
-      setPending(false);
-    }
-  }, []);
+  const run = useCallback(
+    async (task: () => Promise<string | void>) => {
+      setPending(true);
+      try {
+        const ok = await task();
+        if (ok) toast.success(ok);
+        return true;
+      } catch (e) {
+        toast.error((e as Error).message);
+        return false;
+      } finally {
+        setPending(false);
+      }
+    },
+    [toast],
+  );
 
-  return { pending, flash, setFlash, run };
+  return { pending, run };
 }

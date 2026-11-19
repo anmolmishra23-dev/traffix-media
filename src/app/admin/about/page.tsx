@@ -3,7 +3,7 @@
 import type { FormEvent } from "react";
 import { useAdmin } from "@/components/admin/AdminApp";
 import { useLoad, useTask } from "@/components/admin/hooks";
-import { Button, Card, Field, Flash, Loading, PageHeader, inputClass } from "@/components/admin/ui";
+import { Button, Card, Field, Loading, PageHeader, inputClass } from "@/components/admin/ui";
 import { deleteRow, int, optional, refreshSite, saveRow, savedMessage, text } from "@/lib/admin-api";
 import type { AboutSection, Highlight, SiteSettings } from "@/lib/types";
 
@@ -11,7 +11,7 @@ const INTRO_FIELDS = ["about_heading", "about_body", "about_closing", "highlight
 
 export default function AboutAdmin() {
   const { db } = useAdmin();
-  const { pending, flash, run } = useTask();
+  const { pending, run } = useTask();
   const { data, reload } = useLoad(async () => {
     const [s, sec, hl] = await Promise.all([
       db.from("site_settings").select(INTRO_FIELDS.join(",")).eq("id", 1).maybeSingle(),
@@ -122,7 +122,6 @@ export default function AboutAdmin() {
   return (
     <>
       <PageHeader title="About page" description="Everything shown on the About page. The team is managed under Team." />
-      <Flash ok={flash.ok} error={flash.error} />
 
       <form key={JSON.stringify(s)} onSubmit={saveIntro} className="space-y-6">
         <Card className="space-y-5">

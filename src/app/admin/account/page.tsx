@@ -3,12 +3,12 @@
 import { useState, type FormEvent } from "react";
 import { useAdmin } from "@/components/admin/AdminApp";
 import { useTask } from "@/components/admin/hooks";
-import { Button, Card, Field, Flash, PageHeader, inputClass } from "@/components/admin/ui";
+import { Button, Card, Field, PageHeader, inputClass } from "@/components/admin/ui";
 import { changePassword } from "@/lib/admin-api";
 
 export default function AccountPage() {
   const { db, user } = useAdmin();
-  const { pending, flash, run } = useTask();
+  const { pending, run } = useTask();
   const [show, setShow] = useState(false);
   const type = show ? "text" : "password";
 
@@ -35,7 +35,6 @@ export default function AccountPage() {
       <Card>
         <h2 className="mb-5 font-semibold">Change password</h2>
         <form onSubmit={onSubmit} className="max-w-md space-y-4">
-          <Flash ok={flash.ok} error={flash.error} />
           <Field label="Current password">
             <input name="current_password" type={type} autoComplete="current-password" required className={inputClass} />
           </Field>

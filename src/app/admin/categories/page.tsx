@@ -3,14 +3,14 @@
 import type { FormEvent } from "react";
 import { useAdmin } from "@/components/admin/AdminApp";
 import { useLoad, useTask } from "@/components/admin/hooks";
-import { Button, Card, Field, Flash, Loading, PageHeader, inputClass } from "@/components/admin/ui";
+import { Button, Card, Field, Loading, PageHeader, inputClass } from "@/components/admin/ui";
 import { deleteRow, int, optional, refreshSite, saveRow, savedMessage, text } from "@/lib/admin-api";
 import type { Category } from "@/lib/types";
 import { slugify } from "@/lib/utils";
 
 export default function CategoriesAdmin() {
   const { db } = useAdmin();
-  const { pending, flash, run } = useTask();
+  const { pending, run } = useTask();
   const { data, reload } = useLoad(async () => {
     const [{ data: categories }, { data: projects }] = await Promise.all([
       db.from("categories").select("*").order("sort_order"),
@@ -48,7 +48,6 @@ export default function CategoriesAdmin() {
   return (
     <>
       <PageHeader title="Industries" description="Used to group projects on the Work page and the home page." />
-      <Flash ok={flash.ok} error={flash.error} />
 
       <Card className="mb-6">
         <h2 className="mb-4 font-semibold">Add an industry</h2>

@@ -3,13 +3,13 @@
 import type { FormEvent } from "react";
 import { useAdmin } from "@/components/admin/AdminApp";
 import { useLoad, useTask } from "@/components/admin/hooks";
-import { Button, Card, Field, Flash, Loading, PageHeader, inputClass } from "@/components/admin/ui";
+import { Button, Card, Field, Loading, PageHeader, inputClass } from "@/components/admin/ui";
 import { deleteRow, int, optional, refreshSite, saveRow, savedMessage, text } from "@/lib/admin-api";
 import type { Service } from "@/lib/types";
 
 export default function ServicesAdmin() {
   const { db } = useAdmin();
-  const { pending, flash, run } = useTask();
+  const { pending, run } = useTask();
   const { data: services, reload } = useLoad(async () => {
     const { data } = await db.from("services").select("*").order("sort_order");
     return (data as Service[]) ?? [];
@@ -60,7 +60,6 @@ export default function ServicesAdmin() {
   return (
     <>
       <PageHeader title="Services" description="Shown in the “What we do” section and in the contact form dropdown." />
-      <Flash ok={flash.ok} error={flash.error} />
 
       <Card className="mb-6">
         <h2 className="mb-4 font-semibold">Add a service</h2>

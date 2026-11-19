@@ -3,7 +3,7 @@
 import type { FormEvent } from "react";
 import { useAdmin } from "@/components/admin/AdminApp";
 import { useLoad, useTask } from "@/components/admin/hooks";
-import { Button, Card, Field, Flash, Loading, PageHeader, inputClass } from "@/components/admin/ui";
+import { Button, Card, Field, Loading, PageHeader, inputClass } from "@/components/admin/ui";
 import { optional, refreshSite, savedMessage } from "@/lib/admin-api";
 import type { SiteSettings } from "@/lib/types";
 
@@ -22,7 +22,7 @@ const FIELDS = [
 
 export default function SettingsAdmin() {
   const { db } = useAdmin();
-  const { pending, flash, run } = useTask();
+  const { pending, run } = useTask();
   const { data: s, reload } = useLoad(async () => {
     const { data } = await db.from("site_settings").select("*").eq("id", 1).maybeSingle();
     return (data ?? {}) as Partial<SiteSettings>;
@@ -45,7 +45,6 @@ export default function SettingsAdmin() {
   return (
     <>
       <PageHeader title="Site settings" description="Headlines, about text and contact details used across the website." />
-      <Flash ok={flash.ok} error={flash.error} />
 
       {!s ? (
         <Loading />

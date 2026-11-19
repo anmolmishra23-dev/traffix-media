@@ -8,6 +8,7 @@ import { createContext, useContext, useEffect, useState, useSyncExternalStore } 
 import { getAdminClient } from "@/lib/supabase/browser";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { asset, cn } from "@/lib/utils";
+import { ToastProvider } from "./toast";
 import { Loading } from "./ui";
 
 type AdminCtx = { db: SupabaseClient; user: User; refreshUnread: () => void };
@@ -41,8 +42,16 @@ function usePath() {
   return (usePathname() || "/").replace(/(.)\/$/, "$1");
 }
 
-/** Wraps every /admin page: checks the login, shows the sidebar, and provides the database client. */
+/** Wraps every /admin page: toasts, login check, sidebar and the database client. */
 export function AdminApp({ children }: { children: React.ReactNode }) {
+  return (
+    <ToastProvider>
+      <AdminGate>{children}</AdminGate>
+    </ToastProvider>
+  );
+}
+
+function AdminGate({ children }: { children: React.ReactNode }) {
   const pathname = usePath();
   const router = useRouter();
   const isLogin = pathname === "/admin/login";

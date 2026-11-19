@@ -28,7 +28,7 @@ function EditProject() {
   const id = useSearchParams().get("id");
   const router = useRouter();
   const { db } = useAdmin();
-  const { pending, flash, setFlash, run } = useTask();
+  const { pending, run } = useTask();
 
   const { data, error, reload } = useLoad(async () => {
     const [cats, proj] = await Promise.all([
@@ -59,8 +59,9 @@ function EditProject() {
     if (!project || !window.confirm(`Delete "${project.title}"? This cannot be undone.`)) return;
     run(async () => {
       await deleteProject(db, project);
-      await refreshSite(db);
+      const live = await refreshSite(db);
       router.push("/admin/projects");
+      return savedMessage(`"${project.title}" deleted`, live);
     });
   };
 
@@ -81,10 +82,9 @@ function EditProject() {
           }
         />
       </div>
-      <Flash ok={flash.ok} error={flash.error} />
 
       {/* key: re-mount the form with fresh values after each save */}
-      <form key={`${project?.id}-${project?.cover_image_url}-${project?.gallery.length}-${project?.videos.length}-${project?.logo_url}`} onSubmit={onSubmit} onChange={() => flash.ok && setFlash({})} className="space-y-6">
+      <form key={`${project?.id}-${project?.cover_image_url}-${project?.gallery.length}-${project?.videos.length}-${project?.logo_url}`} onSubmit={onSubmit} className="space-y-6">
         <Card className="space-y-5">
           <h2 className="font-semibold">Details</h2>
           <div className="grid gap-5 sm:grid-cols-2">

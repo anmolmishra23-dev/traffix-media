@@ -4,7 +4,7 @@ import Image from "next/image";
 import type { FormEvent } from "react";
 import { useAdmin } from "@/components/admin/AdminApp";
 import { useLoad, useTask } from "@/components/admin/hooks";
-import { Button, Card, Checkbox, Field, Flash, Loading, PageHeader, inputClass } from "@/components/admin/ui";
+import { Button, Card, Checkbox, Field, Loading, PageHeader, inputClass } from "@/components/admin/ui";
 import { bool, deleteImages, deleteRow, int, optional, refreshSite, saveRow, savedMessage, text, uploadImage } from "@/lib/admin-api";
 import type { TeamMember } from "@/lib/types";
 import { initials, mediaUrl } from "@/lib/utils";
@@ -14,7 +14,7 @@ const fileInput =
 
 export default function TeamAdmin() {
   const { db } = useAdmin();
-  const { pending, flash, run } = useTask();
+  const { pending, run } = useTask();
   const { data: team, reload } = useLoad(async () => {
     const { data } = await db.from("team_members").select("*").order("sort_order");
     return (data as TeamMember[]) ?? [];
@@ -99,7 +99,6 @@ export default function TeamAdmin() {
   return (
     <>
       <PageHeader title="Team" description="The people shown on the About page." />
-      <Flash ok={flash.ok} error={flash.error} />
       {!team ? (
         <Loading />
       ) : (

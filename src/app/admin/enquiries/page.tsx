@@ -2,14 +2,14 @@
 
 import { useAdmin } from "@/components/admin/AdminApp";
 import { useLoad, useTask } from "@/components/admin/hooks";
-import { Badge, Button, Card, Flash, Loading, PageHeader } from "@/components/admin/ui";
+import { Badge, Button, Card, Loading, PageHeader } from "@/components/admin/ui";
 import { deleteRow, saveRow } from "@/lib/admin-api";
 import type { Enquiry } from "@/lib/types";
 import { telUrl, whatsappUrl } from "@/lib/utils";
 
 export default function EnquiriesAdmin() {
   const { db, refreshUnread } = useAdmin();
-  const { pending, flash, run } = useTask();
+  const { pending, run } = useTask();
   const { data: enquiries, reload } = useLoad(async () => {
     const { data } = await db.from("enquiries").select("*").order("created_at", { ascending: false });
     return (data as Enquiry[]) ?? [];
@@ -20,6 +20,7 @@ export default function EnquiriesAdmin() {
       await saveRow(db, "enquiries", e.id, { is_read: !e.is_read });
       reload();
       refreshUnread();
+      return e.is_read ? "Marked as unread." : "Marked as read.";
     });
 
   const remove = (e: Enquiry) => {
@@ -35,7 +36,6 @@ export default function EnquiriesAdmin() {
   return (
     <>
       <PageHeader title="Enquiries" description="Messages sent from the website's contact form." />
-      <Flash ok={flash.ok} error={flash.error} />
 
       {!enquiries ? (
         <Loading />

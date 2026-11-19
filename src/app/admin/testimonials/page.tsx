@@ -3,13 +3,13 @@
 import type { FormEvent } from "react";
 import { useAdmin } from "@/components/admin/AdminApp";
 import { useLoad, useTask } from "@/components/admin/hooks";
-import { Button, Card, Checkbox, Field, Flash, Loading, PageHeader, inputClass } from "@/components/admin/ui";
+import { Button, Card, Checkbox, Field, Loading, PageHeader, inputClass } from "@/components/admin/ui";
 import { bool, deleteRow, int, optional, refreshSite, saveRow, savedMessage, text } from "@/lib/admin-api";
 import type { Project, Testimonial } from "@/lib/types";
 
 export default function TestimonialsAdmin() {
   const { db } = useAdmin();
-  const { pending, flash, run } = useTask();
+  const { pending, run } = useTask();
   const { data, reload } = useLoad(async () => {
     const [t, p] = await Promise.all([
       db.from("testimonials").select("*").order("sort_order"),
@@ -92,7 +92,6 @@ export default function TestimonialsAdmin() {
   return (
     <>
       <PageHeader title="Testimonials" description="Client reviews. The section appears on the home page as soon as one is published." />
-      <Flash ok={flash.ok} error={flash.error} />
 
       <Card className="mb-6">
         <h2 className="mb-4 font-semibold">Add a testimonial</h2>
