@@ -31,6 +31,17 @@ export function TestimonialSlider({ items }: { items: SlideTestimonial[] }) {
   const [tick, setTick] = useState(0); // restarts the progress bar
   const [expanded, setExpanded] = useState(false);
   const touchX = useRef<number | null>(null);
+  const root = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  // only advance while the section is actually on screen
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const n = items.length;
 
   const go = useCallback(
@@ -43,20 +54,22 @@ export function TestimonialSlider({ items }: { items: SlideTestimonial[] }) {
   );
 
   useEffect(() => {
-    if (paused || expanded || n < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (paused || expanded || !inView || n < 2) return;
     const id = setTimeout(() => go(1), AUTOPLAY_MS);
     return () => clearTimeout(id);
-  }, [paused, expanded, n, go, index, tick]);
+  }, [paused, expanded, inView, n, go, index, tick]);
 
   if (!n) return null;
   const current = items[index];
 
   return (
     <div
+      ref={root}
       className="grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.6fr] lg:gap-16"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
+      // Pause only for a real mouse hovering or keyboard focus — on phones a tap must not stop autoplay
+      onPointerEnter={(e) => e.pointerType === "mouse" && setPaused(true)}
+      onPointerLeave={(e) => e.pointerType === "mouse" && setPaused(false)}
+      onFocus={(e) => (e.target as HTMLElement).matches(":focus-visible") && setPaused(true)}
       onBlur={() => setPaused(false)}
     >
       {/* left rail: heading + client list + controls */}
