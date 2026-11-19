@@ -119,9 +119,9 @@ export function TestimonialSlider({ items }: { items: SlideTestimonial[] }) {
           if (e.key === "ArrowLeft") go(-1);
         }}
       >
-        {/* the next cards in the stack, peeking out underneath */}
-        <div aria-hidden="true" className="absolute inset-x-8 -bottom-5 top-8 rotate-[1.2deg] rounded-[2rem] bg-[#c9ad94] shadow-xl shadow-black/20 md:inset-x-12 md:-bottom-7" />
-        <div aria-hidden="true" className="absolute inset-x-4 -bottom-2.5 top-4 -rotate-[0.8deg] rounded-[2rem] bg-[#e4d1bc] shadow-xl shadow-black/20 md:inset-x-6 md:-bottom-3.5" />
+        {/* the next cards in the stack: straight, each a little narrower and lower */}
+        <div aria-hidden="true" className="absolute inset-x-10 top-10 -bottom-6 rounded-[2rem] bg-cream/25 md:inset-x-16 md:-bottom-8" />
+        <div aria-hidden="true" className="absolute inset-x-5 top-5 -bottom-3 rounded-[2rem] bg-cream/50 md:inset-x-8 md:-bottom-4" />
 
         <div className="relative grid">
           {items.map((t, i) => {
@@ -166,7 +166,17 @@ export function TestimonialSlider({ items }: { items: SlideTestimonial[] }) {
                       </button>
                     )}
                   </div>
-                  <figcaption className="mt-8 flex items-center gap-4 border-t border-line pt-6">
+                  <figcaption className="relative mt-8 flex items-center gap-4 pt-6">
+                    {/* divider that fills up while this testimonial is showing */}
+                    <span aria-hidden="true" className="absolute inset-x-0 top-0 h-0.5 overflow-hidden rounded-full bg-line">
+                      {active && (
+                        <span
+                          key={`${index}-${tick}-${paused}`}
+                          className={cn("block h-full origin-left bg-maroon", !paused && !expanded && "animate-[progress_9s_linear_both]")}
+                          style={paused || expanded ? { transform: "scaleX(0)" } : undefined}
+                        />
+                      )}
+                    </span>
                     <Avatar t={t} />
                     <div className="min-w-0">
                       <p className="font-display text-lg font-extrabold tracking-tight">{t.name}</p>
@@ -182,16 +192,6 @@ export function TestimonialSlider({ items }: { items: SlideTestimonial[] }) {
                       </Link>
                     )}
                   </figcaption>
-                </div>
-                {/* progress */}
-                <div className="h-1 bg-ink/5">
-                  {active && (
-                    <div
-                      key={`${index}-${tick}-${paused}`}
-                      className={cn("h-full origin-left bg-maroon", !paused && "animate-[progress_9s_linear_both]")}
-                      style={paused ? { transform: "scaleX(0)" } : undefined}
-                    />
-                  )}
                 </div>
               </figure>
             );
