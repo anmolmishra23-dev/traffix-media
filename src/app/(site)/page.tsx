@@ -220,7 +220,6 @@ export default async function HomePage() {
           <div aria-hidden="true" className="pointer-events-none absolute inset-0">
             <div className="absolute -top-40 -left-40 size-[560px] rounded-full bg-maroon-2/40 blur-3xl" />
             <div className="absolute -right-32 -bottom-48 size-[520px] rounded-full bg-maroon/60 blur-3xl" />
-            <span className="font-display absolute -bottom-24 left-1/2 -translate-x-1/2 text-[22rem] leading-none font-black text-cream/[0.03] select-none">&rdquo;</span>
           </div>
           <div className="relative mx-auto max-w-7xl">
             <TestimonialSlider

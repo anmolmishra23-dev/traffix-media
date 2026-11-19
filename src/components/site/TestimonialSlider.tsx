@@ -17,15 +17,19 @@ export type SlideTestimonial = {
 };
 
 const AUTOPLAY_MS = 9000;
+/** Quotes longer than this get a "Read full review" toggle (roughly six lines). */
+const LONG_QUOTE = 300;
 
 /**
- * Sliding testimonials. All cards share one grid cell, so the section is as tall as the
- * longest quote and never jumps. Auto-advances, pauses on hover/focus, supports swipe + arrows.
+ * Sliding testimonials. Quotes are trimmed to six lines (with "Read full review") so every card
+ * is a similar height; all cards share one grid cell so the section never jumps between slides.
+ * Auto-advances, pauses on hover/focus or while a review is expanded; swipe, arrows and keyboard.
  */
 export function TestimonialSlider({ items }: { items: SlideTestimonial[] }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [tick, setTick] = useState(0); // restarts the progress bar
+  const [expanded, setExpanded] = useState(false);
   const touchX = useRef<number | null>(null);
   const n = items.length;
 
@@ -33,15 +37,16 @@ export function TestimonialSlider({ items }: { items: SlideTestimonial[] }) {
     (d: number) => {
       setIndex((i) => (i + d + n) % n);
       setTick((t) => t + 1);
+      setExpanded(false);
     },
     [n],
   );
 
   useEffect(() => {
-    if (paused || n < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (paused || expanded || n < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const id = setTimeout(() => go(1), AUTOPLAY_MS);
     return () => clearTimeout(id);
-  }, [paused, n, go, index, tick]);
+  }, [paused, expanded, n, go, index, tick]);
 
   if (!n) return null;
   const current = items[index];
@@ -68,7 +73,7 @@ export function TestimonialSlider({ items }: { items: SlideTestimonial[] }) {
             <li key={t.id}>
               <button
                 type="button"
-                onClick={() => (setIndex(i), setTick((x) => x + 1))}
+                onClick={() => (setIndex(i), setTick((x) => x + 1), setExpanded(false))}
                 aria-current={i === index}
                 className={cn(
                   "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition",
@@ -98,7 +103,7 @@ export function TestimonialSlider({ items }: { items: SlideTestimonial[] }) {
 
       {/* stage */}
       <div
-        className="relative"
+        className="relative self-start"
         role="region"
         aria-roledescription="carousel"
         aria-label="Client testimonials"
@@ -114,9 +119,9 @@ export function TestimonialSlider({ items }: { items: SlideTestimonial[] }) {
           if (e.key === "ArrowLeft") go(-1);
         }}
       >
-        {/* cards peeking behind */}
-        <div aria-hidden="true" className="absolute inset-x-6 -bottom-3 top-6 rounded-[2rem] bg-cream/10 md:inset-x-10 md:-bottom-6" />
-        <div aria-hidden="true" className="absolute inset-x-3 -bottom-1.5 top-3 rounded-[2rem] bg-cream/20 md:inset-x-5 md:-bottom-3" />
+        {/* the next cards in the stack, peeking out underneath */}
+        <div aria-hidden="true" className="absolute inset-x-8 -bottom-5 top-8 rotate-[1.2deg] rounded-[2rem] bg-[#c9ad94] shadow-xl shadow-black/20 md:inset-x-12 md:-bottom-7" />
+        <div aria-hidden="true" className="absolute inset-x-4 -bottom-2.5 top-4 -rotate-[0.8deg] rounded-[2rem] bg-[#e4d1bc] shadow-xl shadow-black/20 md:inset-x-6 md:-bottom-3.5" />
 
         <div className="relative grid">
           {items.map((t, i) => {
@@ -137,14 +142,30 @@ export function TestimonialSlider({ items }: { items: SlideTestimonial[] }) {
                   <svg viewBox="0 0 48 36" className="h-9 w-12 text-maroon" aria-hidden="true">
                     <path fill="currentColor" d="M0 36V22C0 9.6 6.2 2.3 18.6 0l2 4.6C13.8 6.5 10.4 10.6 10.2 17H19v19H0Zm27 0V22C27 9.6 33.2 2.3 45.6 0l2 4.6C40.8 6.5 37.4 10.6 37.2 17H46v19H27Z" />
                   </svg>
-                  <blockquote
-                    className={cn(
-                      "mt-6 flex-1 leading-relaxed text-ink/85 text-pretty whitespace-pre-line",
-                      t.quote.length > 600 ? "text-base md:text-lg" : t.quote.length > 380 ? "text-lg md:text-xl" : "text-xl md:text-2xl",
+                  <div className="mt-6 flex-1">
+                    <blockquote
+                      className={cn(
+                        "text-lg leading-relaxed text-ink/85 text-pretty whitespace-pre-line md:text-xl",
+                        !(active && expanded) && "line-clamp-6",
+                      )}
+                    >
+                      {t.quote.trim()}
+                    </blockquote>
+                    {t.quote.trim().length > LONG_QUOTE && (
+                      <button
+                        type="button"
+                        tabIndex={active ? 0 : -1}
+                        onClick={() => setExpanded((x) => !x)}
+                        aria-expanded={active && expanded}
+                        className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-maroon hover:underline"
+                      >
+                        {active && expanded ? "Show less" : "Read full review"}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={cn("size-4 transition", active && expanded && "rotate-180")} aria-hidden="true">
+                          <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </button>
                     )}
-                  >
-                    {t.quote.trim()}
-                  </blockquote>
+                  </div>
                   <figcaption className="mt-8 flex items-center gap-4 border-t border-line pt-6">
                     <Avatar t={t} />
                     <div className="min-w-0">
