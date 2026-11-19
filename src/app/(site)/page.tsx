@@ -241,6 +241,9 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* cream breathing room so the dark testimonials and the dark CTA read as two sections */}
+      {testimonials.length > 0 && <div aria-hidden="true" className="h-20 md:h-28" />}
+
       <CtaBand />
     </>
   );
