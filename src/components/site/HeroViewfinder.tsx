@@ -4,12 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { Project } from "@/lib/types";
-import { cn, initials, mediaUrl } from "@/lib/utils";
+import { cn, coverOf, initials, mediaUrl } from "@/lib/utils";
 import { HeartBubble } from "@/components/icons";
 
 // Hero visual for a video production company: a camera viewfinder (REC, running timecode,
-// framing guides) that cycles through the featured clients as "scenes".
-// Uses each project's cover image once uploaded in the admin.
+// framing guides) that cycles through clients as "scenes".
+// Which projects play, and in what order, is set per project in the admin ("Home page camera position").
 
 const SCENE_MS = 6500;
 const FPS = 25;
@@ -30,8 +30,13 @@ export function HeroViewfinder({
 }) {
   const [index, setIndex] = useState(0);
   const timecode = useRef<HTMLSpanElement>(null);
-  // brands with video first — they make the viewfinder feel alive
-  const scenes = [...projects].sort((a, b) => Number(b.videos.length > 0) - Number(a.videos.length > 0)).slice(0, 8);
+  const picked = projects.filter((p) => p.hero_order != null).sort((a, b) => a.hero_order! - b.hero_order!);
+  // nothing picked yet: featured brands, the ones with video first
+  const scenes = (
+    picked.length
+      ? picked
+      : projects.filter((p) => p.featured).sort((a, b) => Number(b.videos.length > 0) - Number(a.videos.length > 0))
+  ).slice(0, 10);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -60,10 +65,10 @@ export function HeroViewfinder({
       {/* ambient light: a blurred copy of the current scene glows behind the camera */}
       <div aria-hidden="true" className="absolute -inset-[6%] overflow-hidden rounded-[3rem] opacity-60 blur-3xl">
         {scenes.map((p, i) =>
-          p.cover_image_url ? (
+          coverOf(p) ? (
             <Image
               key={p.id}
-              src={mediaUrl(p.cover_image_url)}
+              src={mediaUrl(coverOf(p)!)}
               alt=""
               fill
               sizes="200px"
@@ -92,7 +97,7 @@ export function HeroViewfinder({
                 <video
                   key={p.videos[0]}
                   src={mediaUrl(p.videos[0])}
-                  poster={p.cover_image_url ? mediaUrl(p.cover_image_url) : undefined}
+                  poster={coverOf(p) ? mediaUrl(coverOf(p)!) : undefined}
                   autoPlay
                   muted
                   loop
@@ -102,9 +107,9 @@ export function HeroViewfinder({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-black/40" />
               </>
-            ) : p.cover_image_url ? (
+            ) : coverOf(p) ? (
               <>
-                <Image src={mediaUrl(p.cover_image_url)} alt="" fill priority={i === 0} sizes="480px" className="object-cover" />
+                <Image src={mediaUrl(coverOf(p)!)} alt="" fill priority={i === 0} sizes="480px" className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/40" />
               </>
             ) : (

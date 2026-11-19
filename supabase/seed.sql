@@ -130,3 +130,25 @@ insert into public.team_members (name, role, photo_url, sort_order) select * fro
   ('Nishchay', 'Operations Head & Co-founder', '/media/team/nishchay.webp', 2),
   ('Ishant', 'Content Head & Co-founder', '/media/team/ishant.webp', 3)
 ) as v(name, role, photo_url, sort_order) where not exists (select 1 from public.team_members);
+
+-- Behind-the-scenes clips (public/media/bts) and hover media for services
+update public.site_settings set hero_videos = '{/media/bts/08.mp4,/media/bts/28.mp4,/media/bts/07.mp4,/media/bts/24.mp4,/media/bts/05.mp4,/media/bts/26.mp4,/media/bts/20.mp4,/media/bts/02.mp4,/media/bts/29.mp4,/media/bts/22.mp4}' where id = 1;
+update public.services set media = '{/media/bts/28.mp4,/media/bts/25.mp4,/media/bts/05.mp4,/media/bts/02.mp4}' where title = 'Video Production';
+update public.services set media = '{/media/bts/06.mp4,/media/projects/time-of-magazine-rearco/04.webp,/media/bts/11.mp4,/media/projects/time-of-magazine-rearco/15.webp,/media/bts/09.mp4,/media/projects/time-of-magazine-rearco/20.webp}' where title = 'Photo Shoots';
+update public.services set media = '{/media/projects/kalcend-ai/video-2.mp4,/media/projects/sanmati-jewellers/video-3.mp4,/media/projects/grand-buses-india/video-1.mp4,/media/bts/27.mp4}' where title = 'Social Media Management';
+update public.services set media = '{/media/projects/kalcend-ai/video-1.mp4,/media/bts/19.mp4,/media/projects/kalcend-ai/video-3.mp4,/media/bts/30.mp4}' where title = 'Influencer Marketing';
+update public.services set media = '{/media/bts/10.mp4,/media/projects/time-of-magazine-rearco/video-1.mp4,/media/bts/16.mp4,/media/bts/17.mp4}' where title = 'Event Coverage';
+update public.services set media = '{/media/bts/03.mp4,/media/projects/green-vidyut/video-1.mp4,/media/bts/01.mp4,/media/projects/amalfi-infrastructures/video-1.mp4}' where title = 'Brand Campaigns';
+update public.services set media = '{/media/projects/fllexibott/01.webp,/media/projects/eattaley-cafe/01.webp,/media/projects/grand-buses-india/01.webp,/media/projects/fllexibott/06.webp}' where title = 'Performance Marketing';
+-- home-page camera: Amalfi later in the loop, Sanmati and Green Vidyut out
+update public.projects set hero_order = null;
+update public.projects set hero_order = 1 where slug = 'grand-buses-india';
+update public.projects set hero_order = 2 where slug = 'kalcend-ai';
+update public.projects set hero_order = 3 where slug = 'time-of-magazine-rearco';
+update public.projects set hero_order = 4 where slug = 'fllexibott';
+update public.projects set hero_order = 5 where slug = 'eattaley-cafe';
+update public.projects set hero_order = 6 where slug = 'amalfi-infrastructures';
+-- team: Ishant in the centre, Nishchay on the right
+update public.team_members set sort_order = 1 where name = 'Abhinav Thakur';
+update public.team_members set sort_order = 2 where name = 'Ishant';
+update public.team_members set sort_order = 3 where name = 'Nishchay';

@@ -10,7 +10,7 @@ import { ProjectCard } from "@/components/site/ProjectCard";
 import { Reveal } from "@/components/site/Reveal";
 import { SlideRail } from "@/components/site/SlideRail";
 import { getProjectBySlug, getProjects } from "@/lib/data";
-import { SITE_NAME, SITE_URL, cn, initials, mediaUrl, posterFor, toEmbedUrl } from "@/lib/utils";
+import { SITE_NAME, SITE_URL, cn, coverOf, initials, mediaUrl, posterFor, toEmbedUrl } from "@/lib/utils";
 
 export async function generateStaticParams() {
   const projects = await getProjects();
@@ -51,7 +51,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
   if (!project) notFound();
 
   const embed = toEmbedUrl(project.video_url);
-  const hasMedia = (p: Project) => Boolean(p.cover_image_url || p.videos.length);
+  const hasMedia = (p: Project) => Boolean(coverOf(p) || p.videos.length);
   const related = all
     .filter((p) => p.id !== project.id && p.category_id === project.category_id)
     .sort((a, b) => Number(hasMedia(b)) - Number(hasMedia(a)))
@@ -69,7 +69,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
   const others = all.filter((p) => p.id !== project.id);
   const pos = all.findIndex((p) => p.id === project.id);
   const next =
-    [...all.slice(pos + 1), ...all.slice(0, pos)].find((p) => p.cover_image_url || p.videos.length) ?? others[0] ?? null;
+    [...all.slice(pos + 1), ...all.slice(0, pos)].find((p) => coverOf(p) || p.videos.length) ?? others[0] ?? null;
 
   const facts = [
     videos.length > 0 && { value: String(videos.length), label: videos.length === 1 ? "Reel" : "Reels" },
@@ -242,9 +242,9 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
           <Link href={`/work/${next.slug}`} className="group relative mx-auto block max-w-7xl overflow-hidden rounded-[2rem] bg-ink text-cream">
             <div className="absolute inset-0 opacity-60 transition duration-700 group-hover:scale-105 group-hover:opacity-75">
               {next.videos[0] ? (
-                <AutoVideo src={next.videos[0]} poster={next.cover_image_url} />
-              ) : next.cover_image_url ? (
-                <Image src={mediaUrl(next.cover_image_url)} alt="" fill sizes="1280px" className="object-cover" />
+                <AutoVideo src={next.videos[0]} poster={coverOf(next)} />
+              ) : coverOf(next) ? (
+                <Image src={mediaUrl(coverOf(next)!)} alt="" fill sizes="1280px" className="object-cover" />
               ) : null}
             </div>
             <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/70 to-transparent" />

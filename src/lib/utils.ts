@@ -11,6 +11,12 @@ export const mediaUrl = (src: string) => (src.startsWith("/") ? asset(src) : src
 /** Poster frame for a video shipped with the site ("/media/…/video-1.mp4" → "…/video-1.webp"). */
 export const posterFor = (videoSrc: string) => (videoSrc.startsWith("/") ? videoSrc.replace(/\.(mp4|webm)$/, ".webp") : null);
 
+/** The picture that represents a project: its cover, else the first gallery image, else its first video's poster. */
+export const coverOf = (p: { cover_image_url: string | null; gallery?: string[]; videos?: string[] }) =>
+  p.cover_image_url ?? p.gallery?.[0] ?? (p.videos?.[0] ? posterFor(p.videos[0]) : null) ?? null;
+
+export const isVideo = (src: string) => /\.(mp4|webm)(\?|$)/i.test(src);
+
 export function slugify(input: string) {
   return input
     .toLowerCase()

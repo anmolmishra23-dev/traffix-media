@@ -189,9 +189,14 @@ function EditProject() {
             <Checkbox name="published" label="Show on website" defaultChecked={project?.published ?? true} />
             <Checkbox name="featured" label="Feature on home page" defaultChecked={project?.featured ?? false} />
           </div>
-          <Field label="Order" hint="Lower numbers appear first within the industry." className="max-w-40">
-            <input name="sort_order" type="number" defaultValue={project?.sort_order ?? 0} className={inputClass} />
-          </Field>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Order" hint="Lower numbers appear first within the industry.">
+              <input name="sort_order" type="number" defaultValue={project?.sort_order ?? 0} className={inputClass} />
+            </Field>
+            <Field label="Home page camera (hero) position" hint="1 plays first, 2 second… Leave empty to keep it out of the camera.">
+              <input name="hero_order" type="number" min={1} defaultValue={project?.hero_order ?? ""} placeholder="Not shown" className={inputClass} />
+            </Field>
+          </div>
         </Card>
 
         <Button pending={pending} pendingText="Saving & uploading…">

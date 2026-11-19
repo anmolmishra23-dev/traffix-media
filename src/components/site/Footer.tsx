@@ -39,10 +39,10 @@ export function Footer({ settings }: { settings: SiteSettings }) {
           <div>
             <h2 className="text-xs font-semibold tracking-[0.2em] text-cream/50 uppercase">Get in touch</h2>
             <ul className="mt-5 space-y-3 text-cream/85">
-              {settings.email && (
+              {wa && (
                 <li>
-                  <a href={`mailto:${settings.email}`} className="inline-flex items-center gap-3 break-all hover:text-white">
-                    <MailIcon className="size-4 shrink-0" /> {settings.email}
+                  <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 hover:text-white">
+                    <WhatsappIcon className="size-4 shrink-0" /> WhatsApp us (fastest reply)
                   </a>
                 </li>
               )}
@@ -53,17 +53,17 @@ export function Footer({ settings }: { settings: SiteSettings }) {
                   </a>
                 </li>
               )}
+              {settings.email && (
+                <li>
+                  <a href={`mailto:${settings.email}`} className="inline-flex items-center gap-3 break-all hover:text-white">
+                    <MailIcon className="size-4 shrink-0" /> {settings.email}
+                  </a>
+                </li>
+              )}
               {ig && (
                 <li>
                   <a href={ig} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 hover:text-white">
                     <InstagramIcon className="size-4 shrink-0" /> @{settings.instagram?.replace(/^@/, "")}
-                  </a>
-                </li>
-              )}
-              {wa && (
-                <li>
-                  <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 hover:text-white">
-                    <WhatsappIcon className="size-4 shrink-0" /> WhatsApp us
                   </a>
                 </li>
               )}

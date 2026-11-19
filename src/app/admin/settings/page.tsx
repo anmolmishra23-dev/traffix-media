@@ -3,8 +3,9 @@
 import type { FormEvent } from "react";
 import { useAdmin } from "@/components/admin/AdminApp";
 import { useLoad, useTask } from "@/components/admin/hooks";
+import { MediaList } from "@/components/admin/MediaList";
 import { Button, Card, Field, Loading, PageHeader, inputClass } from "@/components/admin/ui";
-import { optional, refreshSite, savedMessage } from "@/lib/admin-api";
+import { applyMediaList, deleteImages, optional, refreshSite, savedMessage } from "@/lib/admin-api";
 import type { SiteSettings } from "@/lib/types";
 
 const FIELDS = [
@@ -32,11 +33,16 @@ export default function SettingsAdmin() {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     run(async () => {
-      const row: Record<string, string | null> = Object.fromEntries(FIELDS.map((f) => [f, optional(fd, f)]));
-      if (row.instagram) row.instagram = row.instagram.replace(/^@/, "").replace(/^https?:\/\/(www\.)?instagram\.com\//, "").replace(/\/$/, "");
-      if (row.whatsapp) row.whatsapp = row.whatsapp.replace(/\D/g, "");
+      const row: Record<string, string | string[] | null> = Object.fromEntries(FIELDS.map((f) => [f, optional(fd, f)]));
+      const hero = await applyMediaList(db, fd, "hero_videos", s?.hero_videos ?? [], "backgrounds");
+      const reel = await applyMediaList(db, fd, "showreel_videos", s?.showreel_videos ?? [], "backgrounds");
+      row.hero_videos = hero.list;
+      row.showreel_videos = reel.list;
+      if (typeof row.instagram === "string") row.instagram = row.instagram.replace(/^@/, "").replace(/^https?:\/\/(www\.)?instagram\.com\//, "").replace(/\/$/, "");
+      if (typeof row.whatsapp === "string") row.whatsapp = row.whatsapp.replace(/\D/g, "");
       const { error } = await db.from("site_settings").update(row).eq("id", 1);
       if (error) throw new Error(error.message);
+      await deleteImages(db, [...hero.removed, ...reel.removed]);
       reload();
       return savedMessage("Settings saved", await refreshSite(db));
     });
@@ -61,6 +67,22 @@ export default function SettingsAdmin() {
             <Field label="Tagline" hint="Shown in the footer.">
               <input name="tagline" defaultValue={s.tagline ?? ""} className={inputClass} />
             </Field>
+          </Card>
+
+          <Card className="space-y-6">
+            <h2 className="font-semibold">Background videos</h2>
+            <MediaList
+              name="hero_videos"
+              items={s.hero_videos ?? []}
+              label="Behind-the-scenes wall (home & about page tops)"
+              hint="Short silent clips, MP4/WebM, 5 MB max each. 6–10 clips look best."
+            />
+            <MediaList
+              name="showreel_videos"
+              items={s.showreel_videos ?? []}
+              label="Showreel (“Ready to be seen?” band, contact page and the vision section)"
+              hint="MP4/WebM, 5 MB max each. The first 4 are used."
+            />
           </Card>
 
           <Card className="space-y-5">
@@ -96,7 +118,7 @@ export default function SettingsAdmin() {
             </div>
           </Card>
 
-          <Button pending={pending}>Save settings</Button>
+          <Button pending={pending} pendingText="Saving & uploading…">Save settings</Button>
         </form>
       )}
     </>

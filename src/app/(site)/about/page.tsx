@@ -3,8 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "@/components/icons";
 import { AutoVideo } from "@/components/site/AutoVideo";
+import { BtsWall } from "@/components/site/BtsWall";
 import { CtaBand } from "@/components/site/CtaBand";
 import { Reveal } from "@/components/site/Reveal";
+import { Spotlight } from "@/components/site/Spotlight";
 import { getAboutSections, getHighlights, getProjects, getSettings, getTeam } from "@/lib/data";
 import { cn, initials, mediaUrl, posterFor } from "@/lib/utils";
 
@@ -29,94 +31,51 @@ export default async function AboutPage() {
   ]);
 
   const intro = paragraphs(settings.about_body);
-  const collage = projects.filter((p) => p.cover_image_url && !/\/video-\d+\./.test(p.cover_image_url)).slice(0, 4);
-  const reel = projects.find((p) => p.videos.length > 0);
   // the last section is shown as the vision statement over video
   const story = sections.length > 1 ? sections.slice(0, -1) : sections;
   const vision = sections.length > 1 ? sections[sections.length - 1] : null;
-  const showreel = settings.showreel_videos?.[0];
+  const reels = (settings.showreel_videos ?? []).slice(0, 3);
+  // behind-the-scenes clips, starting from a different one than the home page
+  const bts = settings.hero_videos ?? [];
+  const wall = [...bts.slice(4), ...bts.slice(0, 4)];
 
   return (
     <>
       {/* ---------- Hero ---------- */}
-      <section className="relative overflow-hidden px-5 pt-10 pb-20 md:px-8 md:pt-16 md:pb-28">
-        <div aria-hidden="true" className="pointer-events-none absolute -top-40 right-[-10%] size-[700px] rounded-full bg-maroon/[0.08] blur-3xl" />
-        <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 lg:grid-cols-[1.2fr_1fr]">
-          <Reveal>
-            <p className="text-sm font-semibold tracking-[0.2em] text-maroon uppercase">About Traffix Media</p>
-            <h1 className="font-display mt-5 text-[clamp(2.3rem,4.2vw,3.9rem)] leading-[0.98] font-black tracking-[-0.03em] text-balance uppercase">
-              {settings.about_heading}
-            </h1>
-            {intro[0] && <p className="mt-8 max-w-2xl text-xl leading-relaxed text-ink/85 md:text-2xl text-pretty">{intro[0]}</p>}
-          </Reveal>
-
-          <Reveal delay={150} className="relative mx-auto grid w-full max-w-[480px] grid-cols-2 gap-4 pb-10">
-            {collage.slice(0, 2).map((p, i) => (
-              <div key={p.id} className={cn("relative aspect-[4/5] overflow-hidden rounded-3xl shadow-xl shadow-ink/10", i === 1 && "translate-y-10")}>
-                <Image src={mediaUrl(p.cover_image_url!)} alt={`${p.title} — work by Traffix Media`} fill sizes="240px" className="object-cover" />
-              </div>
-            ))}
-            {reel ? (
-              <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-ink shadow-xl shadow-ink/10">
-                <AutoVideo src={reel.videos[0]} poster={posterFor(reel.videos[0])} />
-                <span className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full bg-black/50 px-2.5 py-1 font-mono text-[10px] tracking-wider text-cream backdrop-blur">
-                  <span className="size-1.5 animate-pulse rounded-full bg-[#ff3b3b]" /> REC
-                </span>
-              </div>
-            ) : collage[2] ? (
-              <div className="relative aspect-[4/5] overflow-hidden rounded-3xl">
-                <Image src={mediaUrl(collage[2].cover_image_url!)} alt="" fill sizes="240px" className="object-cover" />
-              </div>
-            ) : null}
-            {collage[3] && (
-              <div className="relative aspect-[4/5] translate-y-10 overflow-hidden rounded-3xl shadow-xl shadow-ink/10">
-                <Image src={mediaUrl(collage[3].cover_image_url!)} alt="" fill sizes="240px" className="object-cover" />
-              </div>
-            )}
-          </Reveal>
+      <section className="px-3 pt-2 md:px-5">
+        <div className="relative isolate overflow-hidden rounded-[2rem] bg-maroon-deep px-5 pt-14 pb-20 text-cream md:rounded-[2.5rem] md:px-8 md:pt-24 md:pb-28">
+          <BtsWall clips={wall} className="-z-20 opacity-60" />
+          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-maroon-deep/75 lg:bg-transparent lg:bg-gradient-to-r lg:from-maroon-deep lg:via-maroon-deep/85 lg:to-maroon-deep/20" />
+          <Spotlight className="-z-10" />
+          <div className="relative mx-auto max-w-7xl">
+            <Reveal className="max-w-3xl">
+              <p className="flex items-center gap-2 font-mono text-xs tracking-[0.2em] text-cream/75 uppercase">
+                <span className="size-2 animate-pulse rounded-full bg-[#ff3b3b]" /> About Traffix Media · behind the scenes
+              </p>
+              <h1 className="font-display mt-5 text-[clamp(2.3rem,4.6vw,4.2rem)] leading-[0.98] font-black tracking-[-0.03em] text-balance uppercase">
+                {settings.about_heading}
+              </h1>
+              {intro[0] && <p className="mt-8 max-w-2xl text-xl leading-relaxed text-cream/85 md:text-2xl text-pretty">{intro[0]}</p>}
+            </Reveal>
+          </div>
         </div>
+      </section>
 
-        {intro.length > 1 && (
-          <div className="relative mx-auto mt-20 grid max-w-7xl grid-cols-1 gap-x-16 gap-y-6 md:grid-cols-2">
+      {intro.length > 1 && (
+        <section className="px-5 pt-16 md:px-8 md:pt-24">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-x-16 gap-y-6 md:grid-cols-2">
             {intro.slice(1).map((p, i) => (
               <Reveal key={i} delay={(i % 2) * 80}>
                 <p className="text-lg leading-relaxed text-ink/80 text-pretty">{p}</p>
               </Reveal>
             ))}
           </div>
-        )}
-      </section>
-
-      {/* ---------- Story sections ---------- */}
-      {story.map((s, i) => (
-        <section key={s.id} className={cn("px-5 py-20 md:px-8 md:py-28", i % 2 === 0 ? "bg-ink text-cream" : "bg-cream-2/60")}>
-          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
-            <Reveal className="lg:sticky lg:top-28 lg:self-start">
-              <p className={cn("font-display text-sm font-bold", i % 2 === 0 ? "text-[#f0b9bf]" : "text-maroon")}>{String(i + 1).padStart(2, "0")}</p>
-              <h2 className="font-display mt-4 text-4xl leading-[0.95] font-black tracking-tight uppercase md:text-6xl">{s.title}</h2>
-            </Reveal>
-            <div className="space-y-6">
-              {paragraphs(s.body).map((p, j) => (
-                <Reveal key={j} delay={j * 60}>
-                  <p
-                    className={cn(
-                      "leading-relaxed text-pretty",
-                      j === 0 ? "font-display text-2xl font-extrabold tracking-tight md:text-3xl" : "text-lg",
-                      j > 0 && (i % 2 === 0 ? "text-cream/75" : "text-ink/80"),
-                    )}
-                  >
-                    {p}
-                  </p>
-                </Reveal>
-              ))}
-            </div>
-          </div>
         </section>
-      ))}
+      )}
 
       {/* ---------- The work speaks ---------- */}
       {highlights.length > 0 && (
-        <section className="relative overflow-hidden bg-maroon px-5 py-20 text-cream md:px-8 md:py-28">
+        <section className="relative isolate mt-16 overflow-hidden bg-maroon px-5 py-20 text-cream md:mt-24 md:px-8 md:py-28">
           <div aria-hidden="true" className="pointer-events-none absolute -top-40 -right-40 size-[600px] rounded-full bg-maroon-2/60 blur-3xl" />
           <div className="relative mx-auto max-w-7xl">
             <Reveal className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-end">
@@ -127,7 +86,7 @@ export default async function AboutPage() {
             </Reveal>
             <ul className={cn("mt-14 grid grid-cols-1 gap-5", highlights.length >= 3 ? "md:grid-cols-3" : "md:grid-cols-2")}>
               {highlights.map((h, i) => (
-                <Reveal as="li" key={h.id} delay={i * 90} className="rounded-3xl border border-cream/15 bg-cream/[0.06] p-8 backdrop-blur-sm md:p-10">
+                <Reveal as="li" key={h.id} delay={i * 90} className="rounded-3xl border border-cream/15 bg-cream/[0.06] p-8 backdrop-blur-sm transition duration-500 ease-out hover:-translate-y-2 hover:border-cream/40 hover:bg-cream hover:text-maroon hover:shadow-2xl hover:shadow-black/30 md:p-10 [&:hover_p]:text-maroon/80">
                   <p className={cn("font-display font-black tracking-tight", h.value.length > 6 ? "text-4xl md:text-5xl" : "text-6xl md:text-7xl")}>{h.value}</p>
                   <p className="font-display mt-4 text-xl font-extrabold tracking-tight">{h.label}</p>
                   {h.description && <p className="mt-3 leading-relaxed text-cream/70">{h.description}</p>}
@@ -138,15 +97,58 @@ export default async function AboutPage() {
         </section>
       )}
 
+      {/* ---------- Story: one table, each row lights up under the cursor ---------- */}
+      {story.length > 0 && (
+        <section className="px-5 py-20 md:px-8 md:py-28">
+          <div className="mx-auto max-w-7xl">
+            <Reveal>
+              <p className="text-sm font-semibold tracking-[0.2em] text-maroon uppercase">How we work</p>
+            </Reveal>
+            <ol className="mt-8 border-t border-line">
+              {story.map((s, i) => {
+                const [lead, ...rest] = paragraphs(s.body);
+                return (
+                  <Reveal
+                    as="li"
+                    key={s.id}
+                    delay={Math.min(i, 3) * 60}
+                    className="group grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 gap-y-4 border-b border-line px-3 py-10 transition-colors duration-300 hover:border-transparent hover:bg-maroon hover:text-cream md:grid-cols-[5rem_minmax(0,0.9fr)_minmax(0,1.4fr)] md:gap-x-10 md:rounded-3xl md:px-8 md:py-14"
+                  >
+                    <span className="font-display pt-1 text-sm font-bold text-maroon transition-colors group-hover:text-cream/70">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <h2 className="font-display text-3xl leading-[0.95] font-black tracking-tight uppercase transition-transform duration-300 group-hover:translate-x-1 md:text-5xl">
+                      {s.title}
+                    </h2>
+                    <div className="col-start-2 space-y-4 md:col-start-3 md:row-start-1">
+                      {lead && <p className="font-display text-xl leading-snug font-extrabold tracking-tight text-pretty md:text-2xl">{lead}</p>}
+                      {rest.map((p, j) => (
+                        <p key={j} className="leading-relaxed text-ink/75 transition-colors text-pretty group-hover:text-cream/80">
+                          {p}
+                        </p>
+                      ))}
+                    </div>
+                  </Reveal>
+                );
+              })}
+            </ol>
+          </div>
+        </section>
+      )}
+
       {/* ---------- Vision ---------- */}
       {vision && (
         <section className="relative overflow-hidden bg-ink px-5 py-24 text-cream md:px-8 md:py-36">
-          {showreel && (
-            <div aria-hidden="true" className="absolute inset-0 opacity-25">
-              <AutoVideo src={showreel} poster={posterFor(showreel)} />
+          {reels.length > 0 && (
+            <div aria-hidden="true" className="absolute inset-0 flex gap-2 opacity-45 md:gap-3">
+              {reels.map((src, i) => (
+                <div key={src} className={cn("relative flex-1 overflow-hidden", i === 2 && "hidden md:block")}>
+                  <AutoVideo src={src} poster={posterFor(src)} />
+                </div>
+              ))}
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/70 to-ink" />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/55 to-ink" />
           <div className="relative mx-auto max-w-4xl text-center">
             <Reveal>
               <p className="font-mono text-xs tracking-[0.2em] text-[#f0b9bf] uppercase">{vision.title}</p>
@@ -210,7 +212,9 @@ export default async function AboutPage() {
       )}
 
       {/* ---------- Brands ---------- */}
-      <section className="bg-ink px-5 py-20 text-cream md:px-8 md:py-24">
+      <section className="relative isolate overflow-hidden bg-ink px-5 py-20 text-cream md:px-8 md:py-24">
+        <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10" />
+        <Spotlight className="-z-10 opacity-70" />
         <div className="mx-auto max-w-7xl">
           <Reveal>
             <h2 className="font-display text-3xl font-black tracking-tight uppercase md:text-5xl">Brands that trust us</h2>
@@ -220,9 +224,18 @@ export default async function AboutPage() {
               <li key={p.id}>
                 <Link
                   href={`/work/${p.slug}`}
-                  className="flex h-12 items-center rounded-full border border-cream/15 px-5 text-cream/80 transition hover:border-cream hover:bg-cream hover:text-maroon"
+                  className="group flex h-14 items-center gap-3 rounded-full border border-cream/15 bg-ink/40 px-5 text-cream/85 backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-cream hover:bg-cream hover:text-maroon"
                 >
-                  {p.title}
+                  {p.logo_url && (
+                    <Image
+                      src={mediaUrl(p.logo_url)}
+                      alt=""
+                      width={72}
+                      height={32}
+                      className="h-7 w-auto max-w-[72px] object-contain brightness-0 invert transition group-hover:invert-0"
+                    />
+                  )}
+                  <span className="font-medium">{p.title}</span>
                 </Link>
               </li>
             ))}

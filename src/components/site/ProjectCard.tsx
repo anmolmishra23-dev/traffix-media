@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/lib/types";
-import { cn, initials, mediaUrl } from "@/lib/utils";
+import { cn, coverOf, initials, mediaUrl } from "@/lib/utils";
 import { ArrowUpRight, HeartBubble, PlayIcon } from "@/components/icons";
 import { AutoVideo } from "./AutoVideo";
 
@@ -24,7 +24,8 @@ export function ProjectCard({
 }) {
   const tone = tones[index % tones.length];
   const video = project.videos?.[0];
-  const hasImage = Boolean(project.cover_image_url || video);
+  const cover = coverOf(project);
+  const hasImage = Boolean(cover || video);
 
   return (
     <Link
@@ -33,7 +34,7 @@ export function ProjectCard({
     >
       <div
         className={cn(
-          "relative overflow-hidden rounded-2xl",
+          "relative overflow-hidden rounded-2xl transition duration-500 ease-out group-hover:-translate-y-1.5 group-hover:shadow-2xl group-hover:shadow-maroon/25",
           size === "lg" ? "aspect-[4/5] md:aspect-[5/6]" : "aspect-[4/5]",
           !hasImage && tone,
         )}
@@ -41,14 +42,14 @@ export function ProjectCard({
         {video ? (
           <>
             <div className="absolute inset-0 transition duration-700 group-hover:scale-105">
-              <AutoVideo src={video} poster={project.cover_image_url} />
+              <AutoVideo src={video} poster={cover} />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/0 to-ink/0" />
           </>
         ) : hasImage ? (
           <>
             <Image
-              src={mediaUrl(project.cover_image_url!)}
+              src={mediaUrl(cover!)}
               alt={`${project.title} — ${project.category?.name ?? "project"} by Traffix Media`}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"

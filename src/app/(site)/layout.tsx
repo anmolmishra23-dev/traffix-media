@@ -1,6 +1,8 @@
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { WhatsAppFab } from "@/components/site/WhatsAppFab";
 import { getSettings } from "@/lib/data";
+import { whatsappUrl } from "@/lib/utils";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const settings = await getSettings();
@@ -15,6 +17,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <Header />
       <main id="main">{children}</main>
       <Footer settings={settings} />
+      {settings.whatsapp && <WhatsAppFab href={whatsappUrl(settings.whatsapp)!} />}
     </>
   );
 }

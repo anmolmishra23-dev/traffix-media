@@ -29,6 +29,7 @@ create table if not exists public.projects (
   videos           text[] not null default '{}',   -- uploaded video files (mp4/webm), max 5 MB each
   logo_url         text,                            -- brand logo (shown in the client strip)
   featured         boolean not null default false,
+  hero_order       int,                             -- position in the home-page viewfinder (empty = not shown)
   published        boolean not null default true,
   sort_order       int not null default 0,
   created_at       timestamptz not null default now(),
@@ -37,15 +38,18 @@ create table if not exists public.projects (
 -- for databases created before these columns existed
 alter table public.projects add column if not exists videos text[] not null default '{}';
 alter table public.projects add column if not exists logo_url text;
+alter table public.projects add column if not exists hero_order int;
 create index if not exists projects_category_idx on public.projects(category_id);
 
 create table if not exists public.services (
   id          uuid primary key default gen_random_uuid(),
   title       text not null,
   description text,
+  media       text[] not null default '{}',   -- photos/videos that play behind the tile on hover
   sort_order  int not null default 0,
   created_at  timestamptz not null default now()
 );
+alter table public.services add column if not exists media text[] not null default '{}';
 
 create table if not exists public.testimonials (
   id          uuid primary key default gen_random_uuid(),
@@ -92,6 +96,7 @@ create table if not exists public.site_settings (
 alter table public.site_settings add column if not exists stat_brands text default '50+';
 alter table public.site_settings add column if not exists stat_industries text default '10+';
 alter table public.site_settings add column if not exists showreel_videos text[] not null default '{}';
+alter table public.site_settings add column if not exists hero_videos text[] not null default '{}';   -- moving wall behind the home/about heroes
 
 -- Emails allowed into /admin
 create table if not exists public.admin_users (

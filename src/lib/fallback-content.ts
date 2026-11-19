@@ -18,6 +18,7 @@ export const fallbackSettings: SiteSettings = {
   stat_brands: "50+",
   stat_industries: "10+",
   showreel_videos: [],
+  hero_videos: [],
   about_closing: "Traffix Media. Creating with purpose. Growing with brands.",
   highlights_heading: "The work speaks",
   highlights_intro: "We take client relationships and the quality of our work seriously.",
@@ -83,6 +84,7 @@ export const fallbackProjects: Project[] = projectList.map(([title, slug, catSlu
     videos: [],
     logo_url: null,
     featured,
+    hero_order: null,
     published: true,
     sort_order: i,
     category: { id: cat.id, name: cat.name, slug: cat.slug },
@@ -97,14 +99,14 @@ export const fallbackServices: Service[] = [
   ["Event Coverage", "Photo, video and live social coverage that turns a one-night event into weeks of content."],
   ["Brand Campaigns", "Launch and awareness campaigns built around a clear idea, from concept to rollout."],
   ["Performance Marketing", "Paid social campaigns on Meta and Google, optimised for reach, leads and sales."],
-].map(([title, description], i) => ({ id: `svc-${i}`, title, description, sort_order: i + 1 }));
+].map(([title, description], i) => ({ id: `svc-${i}`, title, description, media: [], sort_order: i + 1 }));
 
 export const fallbackTestimonials: Testimonial[] = [];
 
 export const fallbackTeam: TeamMember[] = [
   ["Abhinav Thakur", "CEO & Founder", "/media/team/abhinav.webp"],
-  ["Nishchay", "Operations Head & Co-founder", "/media/team/nishchay.webp"],
   ["Ishant", "Content Head & Co-founder", "/media/team/ishant.webp"],
+  ["Nishchay", "Operations Head & Co-founder", "/media/team/nishchay.webp"],
 ].map(([name, role, photo_url], i) => ({ id: `team-${i}`, name, role, photo_url, sort_order: i + 1, published: true }));
 
 export const fallbackAboutSections: AboutSection[] = [];

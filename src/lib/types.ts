@@ -18,6 +18,8 @@ export type Project = {
   videos: string[];
   logo_url: string | null;
   featured: boolean;
+  /** Position in the home-page viewfinder; null = not shown there. */
+  hero_order: number | null;
   published: boolean;
   sort_order: number;
   category?: (Pick<Category, "id" | "name" | "slug"> & { sort_order?: number }) | null;
@@ -27,6 +29,8 @@ export type Service = {
   id: string;
   title: string;
   description: string | null;
+  /** Photos/videos that play behind the tile on hover. */
+  media: string[];
   sort_order: number;
 };
 
@@ -92,6 +96,8 @@ export type SiteSettings = {
   stat_brands: string | null;
   stat_industries: string | null;
   showreel_videos: string[];
+  /** Behind-the-scenes clips for the moving wall behind the home and about heroes. */
+  hero_videos: string[];
   about_closing: string | null;
   highlights_heading: string | null;
   highlights_intro: string | null;

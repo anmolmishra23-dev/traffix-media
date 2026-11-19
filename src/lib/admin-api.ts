@@ -77,6 +77,27 @@ export async function deleteImages(db: Db, urls: (string | null | undefined)[]) 
   if (paths.length) await db.storage.from(MEDIA_BUCKET).remove(paths);
 }
 
+// ---------- photo + video lists ----------
+
+export const isVideoPath = (u: string) => /\.(mp4|webm)(\?|$)/i.test(u);
+
+/**
+ * Applies a <MediaList> field: drops the items ticked "remove_<name>" and uploads the new files from "<name>"
+ * (images become WebP, videos must be MP4/WebM ≤ 5 MB). Returns the new list and the URLs to delete.
+ */
+export async function applyMediaList(db: Db, fd: FormData, name: string, existing: string[], folder: string, opts: { images?: boolean } = {}) {
+  const drop = new Set(fd.getAll(`remove_${name}`).map(String));
+  const removed = existing.filter((u) => drop.has(u));
+  const list = existing.filter((u) => !drop.has(u));
+  for (const file of fd.getAll(name)) {
+    if (!(file instanceof File) || file.size === 0) continue;
+    if (file.type.startsWith("video/")) list.push(await uploadVideo(db, file, folder));
+    else if (opts.images) list.push(await uploadImage(db, file, folder));
+    else throw new Error(`${file.name}: only MP4 or WebM videos can be added here.`);
+  }
+  return { list, removed };
+}
+
 // ---------- publishing ----------
 
 /**
@@ -123,6 +144,11 @@ export const text = (fd: FormData, key: string) => String(fd.get(key) ?? "").tri
 export const optional = (fd: FormData, key: string) => text(fd, key) || null;
 export const int = (fd: FormData, key: string) => Number.parseInt(text(fd, key), 10) || 0;
 export const bool = (fd: FormData, key: string) => fd.get(key) === "on";
+/** A whole number, or null when the field is left empty. */
+export const optionalInt = (fd: FormData, key: string) => {
+  const n = Number.parseInt(text(fd, key), 10);
+  return Number.isFinite(n) ? n : null;
+};
 
 // ---------- projects ----------
 
@@ -184,6 +210,7 @@ export async function saveProject(db: Db, fd: FormData, existing: Project | null
     videos,
     logo_url: logo,
     featured: bool(fd, "featured"),
+    hero_order: optionalInt(fd, "hero_order"),
     published: bool(fd, "published"),
     sort_order: int(fd, "sort_order"),
   });

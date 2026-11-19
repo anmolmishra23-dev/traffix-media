@@ -51,6 +51,7 @@ export default function ProjectsAdmin() {
                   </div>
                   <div className="hidden gap-1.5 sm:flex">
                     {p.featured && <Badge tone="maroon">Featured</Badge>}
+                    {p.hero_order != null && <Badge tone="maroon">{`Camera #${p.hero_order}`}</Badge>}
                     {(p.video_url || p.videos.length > 0) && <Badge>Video</Badge>}
                     {!p.published && <Badge tone="amber">Hidden</Badge>}
                   </div>
