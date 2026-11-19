@@ -165,16 +165,16 @@ export default async function HomePage() {
               <Reveal as="li" key={category.id} delay={Math.min(i, 4) * 40}>
                 <Link
                   href={`/work#${category.slug}`}
-                  className="group grid grid-cols-[3rem_1fr_auto] items-baseline gap-4 border-b border-cream/10 px-3 py-6 transition-colors duration-300 hover:border-transparent hover:bg-maroon md:grid-cols-[5rem_1.1fr_1.6fr_auto] md:rounded-2xl md:px-6 md:py-8"
+                  className="group grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-baseline gap-x-3 gap-y-2 border-b border-cream/10 px-3 py-6 transition-colors duration-300 hover:border-transparent hover:bg-maroon md:grid-cols-[5rem_1.1fr_1.6fr_auto] md:gap-4 md:rounded-2xl md:px-6 md:py-8"
                 >
-                  <span className="font-display text-sm font-bold text-cream/40 group-hover:text-cream/80">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="font-display text-2xl font-extrabold tracking-tight uppercase transition group-hover:translate-x-2 md:text-4xl">
+                  <span className="font-display col-start-1 row-start-1 text-sm font-bold text-cream/40 group-hover:text-cream/80 md:col-auto md:row-auto">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="font-display col-start-2 row-start-1 min-w-0 text-xl font-extrabold tracking-tight [overflow-wrap:anywhere] uppercase transition group-hover:translate-x-2 sm:text-2xl md:col-auto md:row-auto md:text-4xl">
                     {category.name}
                   </span>
-                  <span className="col-span-2 col-start-2 text-cream/55 group-hover:text-cream/90 md:col-span-1 md:col-start-auto">
+                  <span className="col-span-2 col-start-2 row-start-2 text-cream/55 group-hover:text-cream/90 md:col-span-1 md:col-start-auto md:row-auto">
                     {items.map((p) => p.title).join(" · ")}
                   </span>
-                  <ArrowUpRight className="row-start-1 size-5 justify-self-end text-cream/40 transition group-hover:rotate-45 group-hover:text-cream md:row-auto" />
+                  <ArrowUpRight className="col-start-3 row-start-1 size-5 justify-self-end text-cream/40 transition group-hover:rotate-45 group-hover:text-cream md:col-auto md:row-auto" />
                 </Link>
               </Reveal>
             ))}
