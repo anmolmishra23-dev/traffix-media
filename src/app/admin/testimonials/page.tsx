@@ -5,15 +5,20 @@ import { useAdmin } from "@/components/admin/AdminApp";
 import { useLoad, useTask } from "@/components/admin/hooks";
 import { Button, Card, Checkbox, Field, Flash, Loading, PageHeader, inputClass } from "@/components/admin/ui";
 import { bool, deleteRow, int, optional, refreshSite, saveRow, savedMessage, text } from "@/lib/admin-api";
-import type { Testimonial } from "@/lib/types";
+import type { Project, Testimonial } from "@/lib/types";
 
 export default function TestimonialsAdmin() {
   const { db } = useAdmin();
   const { pending, flash, run } = useTask();
-  const { data: items, reload } = useLoad(async () => {
-    const { data } = await db.from("testimonials").select("*").order("sort_order");
-    return (data as Testimonial[]) ?? [];
+  const { data, reload } = useLoad(async () => {
+    const [t, p] = await Promise.all([
+      db.from("testimonials").select("*").order("sort_order"),
+      db.from("projects").select("id, title").order("title"),
+    ]);
+    return { items: (t.data as Testimonial[]) ?? [], projects: (p.data as Pick<Project, "id" | "title">[]) ?? [] };
   });
+  const items = data?.items ?? null;
+  const projects = data?.projects ?? [];
 
   const save = (e: FormEvent<HTMLFormElement>, id: string | null) => {
     e.preventDefault();
@@ -28,6 +33,7 @@ export default function TestimonialsAdmin() {
         quote,
         role: optional(fd, "role"),
         company: optional(fd, "company"),
+        project_id: optional(fd, "project_id"),
         published: bool(fd, "published"),
         sort_order: int(fd, "sort_order"),
       });
@@ -56,6 +62,16 @@ export default function TestimonialsAdmin() {
       </Field>
       <Field label="Company">
         <input name="company" defaultValue={t?.company ?? ""} className={inputClass} />
+      </Field>
+      <Field label="Linked project" hint="Shows that brand's logo and work beside the quote." className="sm:col-span-3">
+        <select name="project_id" defaultValue={t?.project_id ?? ""} className={inputClass}>
+          <option value="">— None —</option>
+          {projects.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.title}
+            </option>
+          ))}
+        </select>
       </Field>
       <Field label="Quote *" className="sm:col-span-3">
         <textarea name="quote" required rows={3} defaultValue={t?.quote} className={inputClass} />
@@ -88,7 +104,7 @@ export default function TestimonialsAdmin() {
       ) : (
         <div className="space-y-3">
           {items.map((t) => (
-            <Card key={`${t.id}-${t.name}-${t.quote}-${t.published}-${t.sort_order}`}>
+            <Card key={`${t.id}-${t.name}-${t.quote}-${t.published}-${t.sort_order}-${t.project_id}`}>
               {fields(t)}
               <div className="mt-3">
                 <Button type="button" variant="danger" pending={pending} pendingText="…" onClick={() => remove(t)}>

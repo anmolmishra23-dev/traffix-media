@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, ChatBubble, HeartBubble } from "@/components/icons";
+import { ArrowUpRight, HeartBubble } from "@/components/icons";
 import { CtaBand } from "@/components/site/CtaBand";
 import { HeroViewfinder } from "@/components/site/HeroViewfinder";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { Reveal } from "@/components/site/Reveal";
+import { TestimonialSlider } from "@/components/site/TestimonialSlider";
 import { getProjects, getProjectsByCategory, getServices, getSettings, getTestimonials } from "@/lib/data";
 import { SITE_NAME, SITE_URL, cn, instagramUrl, mediaUrl } from "@/lib/utils";
 
@@ -215,26 +216,28 @@ export default async function HomePage() {
 
       {/* ---------- Testimonials ---------- */}
       {testimonials.length > 0 && (
-        <section className="bg-cream-2 px-5 py-20 md:px-8 md:py-28">
-          <div className="mx-auto max-w-7xl">
-            <Reveal>
-              <p className="text-sm font-semibold tracking-[0.2em] text-maroon uppercase">Kind words</p>
-              <h2 className="font-display mt-3 text-4xl leading-[0.95] font-black tracking-tight uppercase md:text-6xl">
-                What clients say
-              </h2>
-            </Reveal>
-            <ul className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {testimonials.map((t, i) => (
-                <Reveal as="li" key={t.id} delay={(i % 3) * 80} className="flex flex-col rounded-3xl bg-cream p-8">
-                  <ChatBubble className="size-10 text-maroon" />
-                  <blockquote className="mt-6 flex-1 text-lg leading-relaxed">“{t.quote}”</blockquote>
-                  <p className="mt-6 font-semibold">{t.name}</p>
-                  {(t.role || t.company) && (
-                    <p className="text-sm text-muted">{[t.role, t.company].filter(Boolean).join(", ")}</p>
-                  )}
-                </Reveal>
-              ))}
-            </ul>
+        <section className="relative overflow-hidden bg-maroon-deep px-5 py-20 text-cream md:px-8 md:py-28">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+            <div className="absolute -top-40 -left-40 size-[560px] rounded-full bg-maroon-2/40 blur-3xl" />
+            <div className="absolute -right-32 -bottom-48 size-[520px] rounded-full bg-maroon/60 blur-3xl" />
+            <span className="font-display absolute -bottom-24 left-1/2 -translate-x-1/2 text-[22rem] leading-none font-black text-cream/[0.03] select-none">&rdquo;</span>
+          </div>
+          <div className="relative mx-auto max-w-7xl">
+            <TestimonialSlider
+              items={testimonials.map((t) => {
+                const p = projects.find((x) => x.id === t.project_id);
+                return {
+                  id: t.id,
+                  quote: t.quote,
+                  name: t.name,
+                  role: t.role,
+                  company: t.company,
+                  logo: p?.logo_url ?? null,
+                  cover: p?.cover_image_url ?? null,
+                  slug: p?.slug ?? null,
+                };
+              })}
+            />
           </div>
         </section>
       )}

@@ -6,8 +6,11 @@ import {
   fallbackServices,
   fallbackSettings,
   fallbackTestimonials,
+  fallbackTeam,
+  fallbackAboutSections,
+  fallbackHighlights,
 } from "./fallback-content";
-import type { Category, Project, Service, SiteSettings, Testimonial } from "./types";
+import type { AboutSection, Category, Highlight, Project, Service, SiteSettings, TeamMember, Testimonial } from "./types";
 
 const PROJECT_SELECT = "*, category:categories(id, name, slug, sort_order)";
 
@@ -74,6 +77,30 @@ export const getTestimonials = cache(async (): Promise<Testimonial[]> => {
     .eq("published", true)
     .order("sort_order");
   if (error) console.error("getTestimonials:", error.message);
+  return data ?? [];
+});
+
+export const getTeam = cache(async (): Promise<TeamMember[]> => {
+  const db = getPublicClient();
+  if (!db) return fallbackTeam;
+  const { data, error } = await db.from("team_members").select("*").eq("published", true).order("sort_order");
+  if (error) console.error("getTeam:", error.message);
+  return data ?? [];
+});
+
+export const getAboutSections = cache(async (): Promise<AboutSection[]> => {
+  const db = getPublicClient();
+  if (!db) return fallbackAboutSections;
+  const { data, error } = await db.from("about_sections").select("*").order("sort_order");
+  if (error) console.error("getAboutSections:", error.message);
+  return data ?? [];
+});
+
+export const getHighlights = cache(async (): Promise<Highlight[]> => {
+  const db = getPublicClient();
+  if (!db) return fallbackHighlights;
+  const { data, error } = await db.from("highlights").select("*").order("sort_order");
+  if (error) console.error("getHighlights:", error.message);
   return data ?? [];
 });
 

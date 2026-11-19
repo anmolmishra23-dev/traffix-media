@@ -4,7 +4,7 @@ import type { Project } from "./types";
 import { BASE_PATH, slugify } from "./utils";
 
 type Db = SupabaseClient;
-export type AdminTable = "projects" | "categories" | "services" | "testimonials" | "enquiries";
+export type AdminTable = "projects" | "categories" | "services" | "testimonials" | "enquiries" | "team_members" | "about_sections" | "highlights";
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif", "image/svg+xml"];

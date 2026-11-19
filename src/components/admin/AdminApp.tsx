@@ -27,6 +27,8 @@ const nav = [
   { href: "/admin/categories", label: "Industries" },
   { href: "/admin/services", label: "Services" },
   { href: "/admin/testimonials", label: "Testimonials" },
+  { href: "/admin/about", label: "About page" },
+  { href: "/admin/team", label: "Team" },
   { href: "/admin/enquiries", label: "Enquiries" },
   { href: "/admin/settings", label: "Site settings" },
   { href: "/admin/account", label: "My account" },

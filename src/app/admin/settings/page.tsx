@@ -11,8 +11,6 @@ const FIELDS = [
   "tagline",
   "hero_heading",
   "hero_subheading",
-  "about_heading",
-  "about_body",
   "email",
   "phone",
   "instagram",
@@ -76,16 +74,6 @@ export default function SettingsAdmin() {
                 <input name="stat_industries" defaultValue={s.stat_industries ?? ""} className={inputClass} placeholder="10+" />
               </Field>
             </div>
-          </Card>
-
-          <Card className="space-y-5">
-            <h2 className="font-semibold">About page</h2>
-            <Field label="Headline">
-              <input name="about_heading" defaultValue={s.about_heading ?? ""} className={inputClass} />
-            </Field>
-            <Field label="About text" hint="Leave a blank line between paragraphs.">
-              <textarea name="about_body" rows={7} defaultValue={s.about_body ?? ""} className={inputClass} />
-            </Field>
           </Card>
 
           <Card className="space-y-5">

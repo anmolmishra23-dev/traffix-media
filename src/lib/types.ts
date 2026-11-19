@@ -38,6 +38,31 @@ export type Testimonial = {
   quote: string;
   published: boolean;
   sort_order: number;
+  project_id: string | null;
+};
+
+export type TeamMember = {
+  id: string;
+  name: string;
+  role: string | null;
+  photo_url: string | null;
+  sort_order: number;
+  published: boolean;
+};
+
+export type AboutSection = {
+  id: string;
+  title: string;
+  body: string | null;
+  sort_order: number;
+};
+
+export type Highlight = {
+  id: string;
+  value: string;
+  label: string;
+  description: string | null;
+  sort_order: number;
 };
 
 export type Enquiry = {
@@ -67,4 +92,7 @@ export type SiteSettings = {
   stat_brands: string | null;
   stat_industries: string | null;
   showreel_videos: string[];
+  about_closing: string | null;
+  highlights_heading: string | null;
+  highlights_intro: string | null;
 };

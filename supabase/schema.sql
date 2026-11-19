@@ -217,6 +217,56 @@ drop policy if exists "admin delete media" on storage.objects;
 create policy "admin delete media" on storage.objects for delete to authenticated
   using (bucket_id = 'media' and public.is_admin());
 
+-- ---------- About page, team, testimonial links ----------
+create table if not exists public.team_members (
+  id          uuid primary key default gen_random_uuid(),
+  name        text not null,
+  role        text,
+  photo_url   text,
+  sort_order  int not null default 0,
+  published   boolean not null default true,
+  created_at  timestamptz not null default now()
+);
+create table if not exists public.about_sections (
+  id          uuid primary key default gen_random_uuid(),
+  title       text not null,
+  body        text,
+  sort_order  int not null default 0,
+  created_at  timestamptz not null default now()
+);
+create table if not exists public.highlights (
+  id          uuid primary key default gen_random_uuid(),
+  value       text not null,
+  label       text not null,
+  description text,
+  sort_order  int not null default 0,
+  created_at  timestamptz not null default now()
+);
+alter table public.testimonials add column if not exists project_id uuid references public.projects(id) on delete set null;
+alter table public.site_settings add column if not exists about_closing text;
+alter table public.site_settings add column if not exists highlights_heading text;
+alter table public.site_settings add column if not exists highlights_intro text;
+
+alter table public.team_members   enable row level security;
+alter table public.about_sections enable row level security;
+alter table public.highlights     enable row level security;
+
+drop policy if exists "public read team" on public.team_members;
+create policy "public read team" on public.team_members for select using (published or public.is_admin());
+drop policy if exists "admin write team" on public.team_members;
+create policy "admin write team" on public.team_members for all using (public.is_admin()) with check (public.is_admin());
+drop policy if exists "public read about" on public.about_sections;
+create policy "public read about" on public.about_sections for select using (true);
+drop policy if exists "admin write about" on public.about_sections;
+create policy "admin write about" on public.about_sections for all using (public.is_admin()) with check (public.is_admin());
+drop policy if exists "public read highlights" on public.highlights;
+create policy "public read highlights" on public.highlights for select using (true);
+drop policy if exists "admin write highlights" on public.highlights;
+create policy "admin write highlights" on public.highlights for all using (public.is_admin()) with check (public.is_admin());
+
+grant select on public.team_members, public.about_sections, public.highlights to anon, authenticated;
+grant insert, update, delete on public.team_members, public.about_sections, public.highlights to authenticated;
+
 -- ---------- Add the client's admin login ----------
 -- 1. Supabase Dashboard → Authentication → Users → Add user (email + password)
 -- 2. Then run (with their real email):

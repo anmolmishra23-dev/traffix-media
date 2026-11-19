@@ -1,6 +1,6 @@
 // Content used when Supabase is not connected yet (local development / preview).
 // Mirrors supabase/seed.sql so the site looks the same before and after connecting.
-import type { Category, Project, Service, SiteSettings, Testimonial } from "./types";
+import type { AboutSection, Category, Highlight, Project, Service, SiteSettings, TeamMember, Testimonial } from "./types";
 
 export const fallbackSettings: SiteSettings = {
   tagline: "Be Seen. Be Known.",
@@ -18,6 +18,9 @@ export const fallbackSettings: SiteSettings = {
   stat_brands: "50+",
   stat_industries: "10+",
   showreel_videos: [],
+  about_closing: "Traffix Media. Creating with purpose. Growing with brands.",
+  highlights_heading: "The work speaks",
+  highlights_intro: "We take client relationships and the quality of our work seriously.",
 };
 
 const categoryList: [string, string][] = [
@@ -97,3 +100,12 @@ export const fallbackServices: Service[] = [
 ].map(([title, description], i) => ({ id: `svc-${i}`, title, description, sort_order: i + 1 }));
 
 export const fallbackTestimonials: Testimonial[] = [];
+
+export const fallbackTeam: TeamMember[] = [
+  ["Abhinav Thakur", "CEO & Founder", "/media/team/abhinav.webp"],
+  ["Nishchay", "Operations Head & Co-founder", "/media/team/nishchay.webp"],
+  ["Ishant", "Content Head & Co-founder", "/media/team/ishant.webp"],
+].map(([name, role, photo_url], i) => ({ id: `team-${i}`, name, role, photo_url, sort_order: i + 1, published: true }));
+
+export const fallbackAboutSections: AboutSection[] = [];
+export const fallbackHighlights: Highlight[] = [];

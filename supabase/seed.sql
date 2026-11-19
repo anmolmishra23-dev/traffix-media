@@ -88,3 +88,45 @@ update public.projects set cover_image_url = '/media/projects/the-raconteur-maga
 update public.projects set cover_image_url = '/media/projects/time-of-magazine-rearco/01.webp', gallery = '{/media/projects/time-of-magazine-rearco/02.webp,/media/projects/time-of-magazine-rearco/03.webp,/media/projects/time-of-magazine-rearco/04.webp,/media/projects/time-of-magazine-rearco/05.webp,/media/projects/time-of-magazine-rearco/06.webp,/media/projects/time-of-magazine-rearco/07.webp,/media/projects/time-of-magazine-rearco/08.webp,/media/projects/time-of-magazine-rearco/09.webp,/media/projects/time-of-magazine-rearco/10.webp,/media/projects/time-of-magazine-rearco/11.webp,/media/projects/time-of-magazine-rearco/12.webp,/media/projects/time-of-magazine-rearco/13.webp,/media/projects/time-of-magazine-rearco/14.webp,/media/projects/time-of-magazine-rearco/15.webp,/media/projects/time-of-magazine-rearco/16.webp,/media/projects/time-of-magazine-rearco/17.webp,/media/projects/time-of-magazine-rearco/18.webp,/media/projects/time-of-magazine-rearco/19.webp,/media/projects/time-of-magazine-rearco/20.webp,/media/projects/time-of-magazine-rearco/21.webp,/media/projects/time-of-magazine-rearco/22.webp,/media/projects/time-of-magazine-rearco/23.webp,/media/projects/time-of-magazine-rearco/24.webp,/media/projects/time-of-magazine-rearco/25.webp,/media/projects/time-of-magazine-rearco/26.webp,/media/projects/time-of-magazine-rearco/27.webp,/media/projects/time-of-magazine-rearco/28.webp,/media/projects/time-of-magazine-rearco/29.webp,/media/projects/time-of-magazine-rearco/30.webp,/media/projects/time-of-magazine-rearco/31.webp,/media/projects/time-of-magazine-rearco/32.webp,/media/projects/time-of-magazine-rearco/33.webp,/media/projects/time-of-magazine-rearco/34.webp,/media/projects/time-of-magazine-rearco/35.webp,/media/projects/time-of-magazine-rearco/36.webp,/media/projects/time-of-magazine-rearco/37.webp,/media/projects/time-of-magazine-rearco/38.webp,/media/projects/time-of-magazine-rearco/39.webp}', videos = '{/media/projects/time-of-magazine-rearco/video-1.mp4,/media/projects/time-of-magazine-rearco/video-2.mp4,/media/projects/time-of-magazine-rearco/video-3.mp4}', logo_url = null where slug = 'time-of-magazine-rearco';
 update public.projects set featured = (slug in ('amalfi-infrastructures','eattaley-cafe','fllexibott','grand-buses-india','green-vidyut','kalcend-ai','rearco','sanmati-jewellers','time-of-magazine-rearco'));
 update public.site_settings set stat_brands = '50+', stat_industries = '10+', showreel_videos = '{/media/showreel/1.mp4,/media/showreel/2.mp4,/media/showreel/3.mp4,/media/showreel/4.mp4}' where id = 1;
+
+-- About page, highlights and team
+update public.site_settings set about_heading = 'Good Content Builds Brands. Great Content Moves Them Forward.', about_body = 'Traffix Media started with an idea back in 2022, long before it officially became a company in 2026. What began as a vision gradually turned into years of planning, learning, working on projects and building something we genuinely wanted to bring into the industry.
+
+The idea behind Traffix Media was simple: we felt that Indian brands and businesses had much more potential than what they were showing through their content and advertising.
+
+The world of content is changing rapidly. International brands are setting new standards in filmmaking, advertising, storytelling and digital communication. We believe Indian brands should have the same opportunities, quality and creative approach. We want to be a part of bringing that change.
+
+Today, content is much more than just posting on Instagram or making a promotional video. It has become one of the most important ways for a business to connect with its customers, build trust and grow. We started Traffix Media to help businesses understand and make the most of that opportunity.', about_closing = 'Traffix Media. Creating with purpose. Growing with brands.', highlights_heading = 'The work speaks', highlights_intro = 'We take client relationships and the quality of our work seriously. Every project is an opportunity to build trust and deliver something that makes a difference.' where id = 1;
+insert into public.about_sections (title, body, sort_order) select * from (values
+  ('What we do differently', 'We don''t believe that every brand should have the same kind of content.
+
+A fashion brand, a real estate company, a restaurant and a manufacturing business all have different audiences and different things to communicate. So why should their content look the same?
+
+Before creating anything, we try to understand the brand, its audience, its market and what it actually wants to achieve. Based on that, we work on the creative direction, production and marketing strategy.
+
+Our work ranges from social media content and brand films to television commercials, product shoots, promotional campaigns and performance-driven video advertisements.
+
+For us, a video shouldn''t just look good. It should have a reason to exist and should contribute something to the brand.', 1),
+  ('Why Traffix Media', 'We started Traffix Media because we wanted to build something that goes beyond the usual agency model.
+
+We wanted to bring production and marketing closer together, so that creativity and business objectives work hand in hand. A beautifully shot video is valuable, but when the right idea reaches the right audience and brings actual results, that''s where its real value lies.
+
+We want to help brands present themselves better, reach the people who matter to them and build a stronger position in their respective industries.
+
+Every brand has a different story to tell. Our job is to understand it and make sure the right people see it.', 2),
+  ('Where we want to go', 'Our vision is bigger than creating campaigns for individual brands.
+
+We want to contribute to raising the standard of Indian content and advertising. We want to see Indian production, storytelling and creative work standing confidently alongside international work.
+
+We know it takes time, consistency and a lot of good work to get there. That''s exactly what we''re building towards.', 3)
+) as v(title, body, sort_order) where not exists (select 1 from public.about_sections);
+insert into public.highlights (value, label, description, sort_order) select * from (values
+  ('95%+', 'Client satisfaction rate', 'A track record built on positive client experiences and long-term relationships.', 1),
+  ('90%+', 'Clients reporting better ROI', 'More than 90% of our served clients have experienced improvements in their return on investment over time.', 2),
+  ('Client-first', 'Approach', 'We focus on understanding the requirement before deciding what needs to be created.', 3)
+) as v(value, label, description, sort_order) where not exists (select 1 from public.highlights);
+insert into public.team_members (name, role, photo_url, sort_order) select * from (values
+  ('Abhinav Thakur', 'CEO & Founder', '/media/team/abhinav.webp', 1),
+  ('Nishchay', 'Operations Head & Co-founder', '/media/team/nishchay.webp', 2),
+  ('Ishant', 'Content Head & Co-founder', '/media/team/ishant.webp', 3)
+) as v(name, role, photo_url, sort_order) where not exists (select 1 from public.team_members);
