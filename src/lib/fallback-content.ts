@@ -85,6 +85,7 @@ export const fallbackProjects: Project[] = projectList.map(([title, slug, catSlu
     logo_url: null,
     featured,
     hero_order: null,
+    card_video: true,
     published: true,
     sort_order: i,
     category: { id: cat.id, name: cat.name, slug: cat.slug },

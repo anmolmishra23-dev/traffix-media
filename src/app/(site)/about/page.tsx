@@ -138,9 +138,9 @@ export default async function AboutPage() {
 
       {/* ---------- Vision ---------- */}
       {vision && (
-        <section className="relative overflow-hidden bg-ink px-5 py-24 text-cream md:px-8 md:py-36">
+        <section className="relative isolate overflow-hidden bg-maroon px-5 py-24 text-cream md:px-8 md:py-36">
           {reels.length > 0 && (
-            <div aria-hidden="true" className="absolute inset-0 flex gap-2 opacity-45 md:gap-3">
+            <div aria-hidden="true" className="absolute inset-0 -z-20 flex gap-2 opacity-60 mix-blend-luminosity md:gap-3">
               {reels.map((src, i) => (
                 <div key={src} className={cn("relative flex-1 overflow-hidden", i === 2 && "hidden md:block")}>
                   <AutoVideo src={src} poster={posterFor(src)} />
@@ -148,7 +148,8 @@ export default async function AboutPage() {
               ))}
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/55 to-ink" />
+          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-maroon via-maroon/60 to-maroon-deep" />
+          <Spotlight className="-z-10" />
           <div className="relative mx-auto max-w-4xl text-center">
             <Reveal>
               <p className="font-mono text-xs tracking-[0.2em] text-[#f0b9bf] uppercase">{vision.title}</p>

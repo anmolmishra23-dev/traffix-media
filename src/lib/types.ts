@@ -20,6 +20,8 @@ export type Project = {
   featured: boolean;
   /** Position in the home-page viewfinder; null = not shown there. */
   hero_order: number | null;
+  /** Play the first video on cards and in the viewfinder; false shows the cover photo there instead. */
+  card_video: boolean;
   published: boolean;
   sort_order: number;
   category?: (Pick<Category, "id" | "name" | "slug"> & { sort_order?: number }) | null;

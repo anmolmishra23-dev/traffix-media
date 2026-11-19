@@ -3,31 +3,27 @@
 import { useEffect, useState } from "react";
 import { WhatsappIcon } from "@/components/icons";
 
-const DISMISSED = "traffix-wa-bubble-closed";
+const FIRST_MS = 5000; // first greeting after the page opens
+const AGAIN_MS = 60000; // after it is closed, it pops up again a minute later
 
 /**
  * Always-visible WhatsApp button with a pulsing ring. A few seconds after the page opens a small
- * "chat with us" bubble pops up next to it; closing the bubble (×) hides only the bubble for this visit —
+ * "chat with us" bubble pops up next to it. Closing it (×) hides it for a minute, then it pops up again —
  * the button itself always stays.
  */
 export function WhatsAppFab({ href }: { href: string }) {
   const [bubble, setBubble] = useState(false);
+  const [closedAt, setClosedAt] = useState(0);
 
   useEffect(() => {
-    let closed = false;
-    try {
-      closed = sessionStorage.getItem(DISMISSED) === "1";
-    } catch {}
-    if (closed) return;
-    const t = setTimeout(() => setBubble(true), 5000);
+    if (bubble) return;
+    const t = setTimeout(() => setBubble(true), closedAt ? AGAIN_MS : FIRST_MS);
     return () => clearTimeout(t);
-  }, []);
+  }, [bubble, closedAt]);
 
   const close = () => {
     setBubble(false);
-    try {
-      sessionStorage.setItem(DISMISSED, "1");
-    } catch {}
+    setClosedAt(Date.now());
   };
 
   const link = `${href}?text=${encodeURIComponent("Hi Traffix Media! I'd like to talk about a project.")}`;

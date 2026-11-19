@@ -6,7 +6,7 @@ function columns(clips: string[], count: number) {
 }
 
 /**
- * A tilted wall of behind-the-scenes clips drifting slowly up and down (Site settings → background videos).
+ * A wall of behind-the-scenes clips (kept straight, no tilted angles) drifting slowly up and down (Site settings → background videos).
  * Purely decorative: sits behind a section's content. Phones get 3 columns, larger screens 5.
  */
 export function BtsWall({ clips, className }: { clips: string[]; className?: string }) {
@@ -18,7 +18,7 @@ export function BtsWall({ clips, className }: { clips: string[]; className?: str
   return (
     <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}>
       {layouts.map((layout, l) => (
-        <div key={l} className={cn("absolute -inset-[15%] -rotate-[8deg] gap-3 md:gap-4", layout.className)}>
+        <div key={l} className={cn("absolute -inset-y-[15%] inset-x-0 gap-3 md:gap-4", layout.className)}>
           {layout.cols.map((col, c) => (
             <div
               key={c}

@@ -152,3 +152,15 @@ update public.projects set hero_order = 6 where slug = 'amalfi-infrastructures';
 update public.team_members set sort_order = 1 where name = 'Abhinav Thakur';
 update public.team_members set sort_order = 2 where name = 'Ishant';
 update public.team_members set sort_order = 3 where name = 'Nishchay';
+
+-- Client round 2: new covers, Grand Buses shows a photo (not its video) on cards, Prateek Group media from its shoots
+update public.projects set cover_image_url = '/media/projects/grand-buses-india/16.webp',
+  gallery = array_replace(gallery, '/media/projects/grand-buses-india/16.webp', '/media/projects/grand-buses-india/01.webp'),
+  card_video = false
+  where slug = 'grand-buses-india' and cover_image_url = '/media/projects/grand-buses-india/01.webp';
+update public.projects set cover_image_url = '/media/projects/eattaley-cafe/11.webp',
+  gallery = array_replace(gallery, '/media/projects/eattaley-cafe/11.webp', '/media/projects/eattaley-cafe/01.webp')
+  where slug = 'eattaley-cafe' and cover_image_url = '/media/projects/eattaley-cafe/01.webp';
+update public.projects set cover_image_url = '/media/projects/prateek-group/01.webp',
+  videos = '{/media/projects/prateek-group/video-1.mp4,/media/projects/prateek-group/video-2.mp4,/media/projects/prateek-group/video-3.mp4,/media/projects/prateek-group/video-4.mp4}'
+  where slug = 'prateek-group' and cover_image_url is null and videos = '{}';

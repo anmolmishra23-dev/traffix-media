@@ -23,7 +23,7 @@ export function ProjectCard({
   size?: "md" | "lg";
 }) {
   const tone = tones[index % tones.length];
-  const video = project.videos?.[0];
+  const video = project.card_video === false ? undefined : project.videos?.[0];
   const cover = coverOf(project);
   const hasImage = Boolean(cover || video);
 

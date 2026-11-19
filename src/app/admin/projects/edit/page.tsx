@@ -188,6 +188,7 @@ function EditProject() {
           <div className="flex flex-wrap gap-6">
             <Checkbox name="published" label="Show on website" defaultChecked={project?.published ?? true} />
             <Checkbox name="featured" label="Feature on home page" defaultChecked={project?.featured ?? false} />
+            <Checkbox name="card_photo" label="Show the cover photo (not the video) on cards and in the home camera" defaultChecked={project ? !project.card_video : false} />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Order" hint="Lower numbers appear first within the industry.">

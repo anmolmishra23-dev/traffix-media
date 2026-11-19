@@ -92,7 +92,7 @@ export function HeroViewfinder({
               i === index ? "scale-100 opacity-100" : "scale-110 opacity-0",
             )}
           >
-            {p.videos.length > 0 && i === index ? (
+            {p.videos.length > 0 && p.card_video !== false && i === index ? (
               <>
                 <video
                   key={p.videos[0]}

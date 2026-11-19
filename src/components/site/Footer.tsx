@@ -42,7 +42,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
               {wa && (
                 <li>
                   <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 hover:text-white">
-                    <WhatsappIcon className="size-4 shrink-0" /> WhatsApp us (fastest reply)
+                    <WhatsappIcon className="size-4 shrink-0" /> WhatsApp us
                   </a>
                 </li>
               )}

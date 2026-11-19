@@ -211,6 +211,7 @@ export async function saveProject(db: Db, fd: FormData, existing: Project | null
     logo_url: logo,
     featured: bool(fd, "featured"),
     hero_order: optionalInt(fd, "hero_order"),
+    card_video: !bool(fd, "card_photo"),
     published: bool(fd, "published"),
     sort_order: int(fd, "sort_order"),
   });

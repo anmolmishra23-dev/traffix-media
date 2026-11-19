@@ -30,6 +30,7 @@ create table if not exists public.projects (
   logo_url         text,                            -- brand logo (shown in the client strip)
   featured         boolean not null default false,
   hero_order       int,                             -- position in the home-page viewfinder (empty = not shown)
+  card_video       boolean not null default true,   -- play the first video on cards / in the viewfinder (false = show the cover photo)
   published        boolean not null default true,
   sort_order       int not null default 0,
   created_at       timestamptz not null default now(),
@@ -39,6 +40,7 @@ create table if not exists public.projects (
 alter table public.projects add column if not exists videos text[] not null default '{}';
 alter table public.projects add column if not exists logo_url text;
 alter table public.projects add column if not exists hero_order int;
+alter table public.projects add column if not exists card_video boolean not null default true;
 create index if not exists projects_category_idx on public.projects(category_id);
 
 create table if not exists public.services (
